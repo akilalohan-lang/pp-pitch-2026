@@ -116,169 +116,6 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 99; }
 .sb-overlay.is-open { display: block; }
 
-/* ─── Responsive ─── */
-
-/* Large desktop (1281–1600px) */
-@media (max-width: 1600px) {
-  .app { grid-template-columns: 280px 1fr; }
-}
-
-/* Laptop 13–16" (1101–1280px) */
-@media (max-width: 1280px) {
-  .app { grid-template-columns: 240px 1fr; }
-  .slide-left { padding: 36px 44px 90px; }
-  .slide-left h2 { font-size: clamp(22px, 2.8vw, 40px); }
-  .stat-num { font-size: 28px; }
-  .booth-price { font-size: 22px; }
-}
-
-/* ═══════════════════════════════════════════════════════
-   TABLET + MOBILE: completely different layout
-   - Sidebar becomes off-canvas drawer
-   - Slide flips to column: image header on TOP, content scrolls below
-   ═══════════════════════════════════════════════════════ */
-@media (max-width: 1100px) {
-
-  /* ── App grid ── */
-  .app { grid-template-columns: 1fr; height: 100dvh; }
-
-  /* ── Sidebar: off-canvas drawer ── */
-  .sb {
-    position: fixed; left: 0; top: 0; bottom: 0; width: 280px; z-index: 100;
-    transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
-    box-shadow: 6px 0 32px rgba(15,23,42,.14); height: 100dvh;
-  }
-  .sb.is-open { transform: translateX(0); }
-  .sb-toggle { display: flex; }
-
-  /* ── Slide: column — image on TOP, content below ── */
-  .slide { flex-direction: column; }
-
-  /* Image/visual header — pinned to top */
-  .slide-right {
-    order: -1;
-    flex: 0 0 38dvh;
-    min-height: 0;
-    border-left: none;
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .slide-right img.char { height: 82%; width: auto; }
-
-  /* Content panel — fills remaining screen, scrollable */
-  .slide-left {
-    flex: 1;
-    min-height: 0;
-    padding: 22px 32px 80px;
-    justify-content: flex-start;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .slide-left h2 { font-size: clamp(22px, 2.8vw, 36px); letter-spacing: -.4px; margin-bottom: 12px; }
-  .slide-left p.lead { font-size: 15px; margin-bottom: 16px; }
-  .slide-eyebrow { margin-bottom: 10px; }
-
-  /* ── Component adjustments ── */
-  .stats-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .stat-num { font-size: 24px; }
-  .stat-card { padding: 12px 0 4px; }
-  .pillars { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .pillar-num { font-size: 24px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .booth-price { font-size: 22px; }
-  .pkg-options { gap: 8px; margin-top: 12px; }
-  .concept-grid { gap: 8px; }
-  .concept-card, .show-card { padding: 12px; }
-  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .participant-panel { padding: 14px 18px; gap: 10px; overflow-y: auto; }
-  .participant-photo, .participant-initials { width: 46px; height: 46px; }
-  .participant-initials { font-size: 16px; }
-  .statement-block { padding: 14px 18px; }
-  .statement-block p { font-size: 15px; }
-  .hat-rules { gap: 14px; margin-top: 8px; }
-  .hat-rule-num { font-size: 34px; min-width: 46px; }
-  .hat-rule-text { font-size: 14px; }
-
-  /* ── Footer & nav ── */
-  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; }
-  .nav-arrows { bottom: 12px; right: 14px; }
-}
-
-/* ── Tablet portrait (769–900px): tighten image strip ── */
-@media (max-width: 900px) {
-  .slide-right { flex: 0 0 32dvh; }
-  .slide-left { padding: 18px 26px 76px; }
-  .slide-left h2 { font-size: clamp(20px, 3.2vw, 30px); margin-bottom: 10px; }
-  .slide-left p.lead { font-size: 14px; margin-bottom: 12px; }
-  .stat-num { font-size: 21px; }
-  .stat-label { font-size: 11.5px; }
-  .pillar-num { font-size: 21px; }
-  .pillar-title { font-size: 12px; }
-  .pillar-body { font-size: 12px; }
-  .bspec-val { font-size: 13px; }
-  .booth-price { font-size: 19px; }
-  .pkg-items { gap: 4px; }
-}
-
-/* ── Mobile (≤600px): single-column everything ── */
-@media (max-width: 600px) {
-  .slide-right { flex: 0 0 26dvh; }
-  .slide-left { padding: 16px 18px 72px; }
-  .slide-left h2 { font-size: clamp(20px, 5.5vw, 26px); letter-spacing: -.2px; margin-bottom: 8px; }
-  .slide-left p.lead { font-size: 13.5px; margin-bottom: 10px; }
-
-  /* Collapse all grids to 1 col or 2-col max */
-  .stats-row { grid-template-columns: 1fr 1fr; gap: 5px; }
-  .stat-num { font-size: 18px; }
-  .stat-card { padding: 10px 0 3px; }
-  .pillars { grid-template-columns: 1fr; gap: 0; }
-  .pillar { border-top: 1px solid var(--border-soft); padding: 10px 0 2px; }
-  .pillar-num { font-size: 20px; margin-bottom: 2px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
-  .bspec { padding: 8px 10px; }
-  .bspec-val { font-size: 12px; }
-  .bspec-label { font-size: 9px; }
-  .booth-price { font-size: 18px; }
-  .pkg-items { flex-direction: column; gap: 3px; }
-  .pkg-plus { display: none; }
-  .pkg-option { padding: 8px 10px; }
-  .show-grid { grid-template-columns: 1fr; gap: 6px; }
-  .concept-grid { gap: 6px; }
-  .concept-card { padding: 10px 12px; gap: 8px; }
-  .participant-panel { padding: 10px 14px; gap: 6px; }
-  .participant-card { padding: 9px 12px; gap: 10px; }
-  .participant-photo, .participant-initials { width: 36px; height: 36px; }
-  .participant-name { font-size: 12px; }
-  .participant-note { font-size: 11px; }
-  .statement-block { padding: 12px 14px; }
-  .statement-block p { font-size: 13px; }
-  .hat-rule-num { font-size: 28px; min-width: 38px; }
-  .hat-rule-text { font-size: 13px; }
-  .qualify-card { padding: 10px 12px; }
-  .qualify-title { font-size: 13px; }
-  .qualify-body { font-size: 11.5px; }
-  .cl-item { padding: 7px 0; }
-  .cl-title { font-size: 12px; }
-  .cl-desc { font-size: 10.5px; }
-  .slide-footer { left: 10px; right: 10px; bottom: 8px; font-size: 10px; }
-  .nav-arrows { bottom: 10px; right: 10px; gap: 5px; }
-  .nav-arrow { width: 30px; height: 30px; }
-}
-
-/* ── Small mobile: iPhone SE / 390px ── */
-@media (max-width: 420px) {
-  .slide-right { flex: 0 0 22dvh; }
-  .slide-left { padding: 12px 14px 68px; }
-  .slide-left h2 { font-size: clamp(18px, 5.5vw, 22px); }
-  .slide-left p.lead { font-size: 13px; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; }
-  .show-grid { grid-template-columns: 1fr; }
-  .checklist { gap: 0; }
-  .cl-item { padding: 5px 0; }
-  .cl-title { font-size: 11.5px; }
-  .cl-desc { font-size: 10px; }
-}
-
 /* ─── Sidebar ─── */
 .sb {
   background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
@@ -550,9 +387,9 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 
 /* ─── Hat slide — stacked panel ─── */
 .hat-zoom-panel { cursor: zoom-in; position: relative; display:flex; flex-direction:column; overflow:hidden; }
-.hat-half { flex:1; background:url('Images/hat.jpg') no-repeat; background-size:100% auto; }
-.hat-top { background-position: center top; }
-.hat-btm { background-position: center bottom; }
+.hat-half { flex:1; overflow:hidden; position:relative; }
+.hat-half img { position:absolute; top:0; left:0; width:100%; height:auto; }
+.hat-btm img { top:auto; bottom:0; }
 .zoom-hint {
   position:absolute; bottom:14px; right:14px;
   background:rgba(0,0,0,.55); color:#fff; font-size:11px; font-weight:600;
@@ -643,6 +480,171 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 .nav-arrow:hover { border-color: var(--purple); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(124,93,255,.22); }
 .nav-arrow svg { width: 13px; height: 13px; color: var(--ink); }
 .nav-arrow.is-disabled { opacity: 0.3; pointer-events: none; }
+
+/* ─── Responsive ─── */
+
+/* Large desktop (1281–1600px) */
+@media (max-width: 1600px) {
+  .app { grid-template-columns: 280px 1fr; }
+}
+
+/* Laptop 13–16" (1101–1280px) */
+@media (max-width: 1280px) {
+  .app { grid-template-columns: 240px 1fr; }
+  .slide-left { padding: 36px 44px 90px; }
+  .slide-left h2 { font-size: clamp(22px, 2.8vw, 40px); }
+  .stat-num { font-size: 28px; }
+  .booth-price { font-size: 22px; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TABLET + MOBILE: completely different layout
+   - Sidebar becomes off-canvas drawer
+   - Slide flips to column: image header on TOP, content scrolls below
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+
+  /* ── App grid ── */
+  .app { grid-template-columns: 1fr; height: 100dvh; }
+
+  /* ── Sidebar: off-canvas drawer ── */
+  .sb {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 280px; z-index: 100;
+    transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow: 6px 0 32px rgba(15,23,42,.14); height: 100dvh;
+  }
+  .sb.is-open { transform: translateX(0); }
+  .sb-toggle { display: flex; }
+
+  /* ── Slide: column — image on TOP, content below ── */
+  .slide { flex-direction: column; }
+
+  /* Image/visual header — pinned to top */
+  .slide-right {
+    order: -1;
+    flex: 0 0 38dvh;
+    min-height: 0;
+    border-left: none;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .slide-right img.char { height: 82%; width: auto; }
+
+  /* Content panel — fills remaining screen, scrollable */
+  .slide-left {
+    flex: 1;
+    min-height: 0;
+    padding: 22px 32px 80px;
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .slide-left h2 { font-size: clamp(22px, 2.8vw, 36px); letter-spacing: -.4px; margin-bottom: 12px; }
+  .slide-left p.lead { font-size: 15px; margin-bottom: 16px; }
+  .slide-eyebrow { margin-bottom: 10px; }
+
+  /* ── Component adjustments ── */
+  .stats-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .stat-num { font-size: 24px; }
+  .stat-card { padding: 12px 0 4px; }
+  .pillars { grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .pillar-num { font-size: 24px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .booth-price { font-size: 22px; }
+  .pkg-options { gap: 8px; margin-top: 12px; }
+  .concept-grid { gap: 8px; }
+  .concept-card, .show-card { padding: 12px; }
+  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .participant-panel { padding: 14px 18px; gap: 10px; overflow-y: auto; }
+  .participant-photo, .participant-initials { width: 46px; height: 46px; }
+  .participant-initials { font-size: 16px; }
+  .statement-block { padding: 14px 18px; }
+  .statement-block p { font-size: 15px; }
+  .hat-rules { gap: 14px; margin-top: 8px; }
+  .hat-rule-num { font-size: 34px; min-width: 46px; }
+  .hat-rule-text { font-size: 14px; }
+
+  /* ── Footer & nav ── */
+  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; }
+  .nav-arrows { bottom: 12px; right: 14px; }
+}
+
+/* ── Tablet portrait (769–900px): tighten image strip ── */
+@media (max-width: 900px) {
+  .slide-right { flex: 0 0 32dvh; }
+  .slide-left { padding: 18px 26px 76px; }
+  .slide-left h2 { font-size: clamp(20px, 3.2vw, 30px); margin-bottom: 10px; }
+  .slide-left p.lead { font-size: 14px; margin-bottom: 12px; }
+  .stat-num { font-size: 21px; }
+  .stat-label { font-size: 11.5px; }
+  .pillar-num { font-size: 21px; }
+  .pillar-title { font-size: 12px; }
+  .pillar-body { font-size: 12px; }
+  .bspec-val { font-size: 13px; }
+  .booth-price { font-size: 19px; }
+  .pkg-items { gap: 4px; }
+}
+
+/* ── Mobile (≤600px): single-column everything ── */
+@media (max-width: 600px) {
+  .slide-right { flex: 0 0 26dvh; }
+  .slide-left { padding: 16px 18px 72px; }
+  .slide-left h2 { font-size: clamp(20px, 5.5vw, 26px); letter-spacing: -.2px; margin-bottom: 8px; }
+  .slide-left p.lead { font-size: 13.5px; margin-bottom: 10px; }
+
+  /* Collapse all grids to 1 col or 2-col max */
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 5px; }
+  .stat-num { font-size: 18px; }
+  .stat-card { padding: 10px 0 3px; }
+  .pillars { grid-template-columns: 1fr; gap: 0; }
+  .pillar { border-top: 1px solid var(--border-soft); padding: 10px 0 2px; }
+  .pillar-num { font-size: 20px; margin-bottom: 2px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+  .bspec { padding: 8px 10px; }
+  .bspec-val { font-size: 12px; }
+  .bspec-label { font-size: 9px; }
+  .booth-price { font-size: 18px; }
+  .pkg-items { flex-direction: column; gap: 3px; }
+  .pkg-plus { display: none; }
+  .pkg-option { padding: 8px 10px; }
+  .show-grid { grid-template-columns: 1fr; gap: 6px; }
+  .concept-grid { gap: 6px; }
+  .concept-card { padding: 10px 12px; gap: 8px; }
+  .participant-panel { padding: 10px 14px; gap: 6px; }
+  .participant-card { padding: 9px 12px; gap: 10px; }
+  .participant-photo, .participant-initials { width: 36px; height: 36px; }
+  .participant-name { font-size: 12px; }
+  .participant-note { font-size: 11px; }
+  .statement-block { padding: 12px 14px; }
+  .statement-block p { font-size: 13px; }
+  .hat-rule-num { font-size: 28px; min-width: 38px; }
+  .hat-rule-text { font-size: 13px; }
+  .qualify-card { padding: 10px 12px; }
+  .qualify-title { font-size: 13px; }
+  .qualify-body { font-size: 11.5px; }
+  .cl-item { padding: 7px 0; }
+  .cl-title { font-size: 12px; }
+  .cl-desc { font-size: 10.5px; }
+  .slide-footer { left: 10px; right: 10px; bottom: 8px; font-size: 10px; }
+  .nav-arrows { bottom: 10px; right: 10px; gap: 5px; }
+  .nav-arrow { width: 30px; height: 30px; }
+}
+
+/* ── Small mobile: iPhone SE / 390px ── */
+@media (max-width: 420px) {
+  .slide-right { flex: 0 0 22dvh; }
+  .slide-left { padding: 12px 14px 68px; }
+  .slide-left h2 { font-size: clamp(18px, 5.5vw, 22px); }
+  .slide-left p.lead { font-size: 13px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; }
+  .show-grid { grid-template-columns: 1fr; }
+  .checklist { gap: 0; }
+  .cl-item { padding: 5px 0; }
+  .cl-title { font-size: 11.5px; }
+  .cl-desc { font-size: 10px; }
+}
+
+
 </style>
 </head>
 <body>
@@ -1014,8 +1016,8 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
           <p class="kicker">Logo on the side band and inside the crown. Not on the front. Wearable anywhere. That's the point.</p>
         </div>
         <div class="slide-right hat-zoom-panel" id="hatZoomPanel">
-          <div class="hat-half hat-top"></div>
-          <div class="hat-half hat-btm"></div>
+          <div class="hat-half hat-top"><img src="Images/hat.jpg" alt=""></div>
+          <div class="hat-half hat-btm"><img src="Images/hat.jpg" alt=""></div>
           <div class="zoom-hint">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             Click to zoom
@@ -1150,7 +1152,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
           <p class="kicker">The hat is the hook. The conversation is the goal. The CRM entry is the outcome.</p>
         </div>
         <div class="slide-right">
-          <img src="Images/hat.jpg" alt="PurchasePlus cowboy hat" style="height:100%;width:100%;object-fit:cover;object-position:center top;filter:brightness(1.02);">
+          <img src="Images/hat.jpg" alt="PurchasePlus cowboy hat" style="height:100%;width:100%;object-fit:contain;object-position:center;padding:24px;box-sizing:border-box;background:var(--grad-img);">
         </div>
       </section>
 
@@ -1158,28 +1160,28 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
       <section class="slide" data-title="Show Experience">
         <div class="slide-left">
           <div class="slide-eyebrow"><span class="grad">12 / Show Experience</span></div>
-          <h2>Three days. <span class="grad">One agenda.</span></h2>
-          <p class="lead">Every badge scan routes into the follow-up pipeline. Every conversation has a job. No lead left in a spreadsheet after the show closes.</p>
+          <h2>The hat drives <span class="grad">the funnel.</span></h2>
+          <p class="lead">Every hat handed out is a qualified lead in HubSpot. Every conversation has a job. No contact left without a follow-up after the show closes.</p>
           <div class="show-grid">
             <div class="show-card">
-              <div class="show-tag">Lead Capture</div>
-              <div class="show-title">Badge scanner to HubSpot</div>
-              <div class="show-body">Every scan connects to HubSpot in real time. Personalised follow-up within 2 hours of every interaction. No manual export.</div>
+              <div class="show-tag">The Hook</div>
+              <div class="show-title">100 hats. 100 leads.</div>
+              <div class="show-body">Keyring with QR code gets them to the form. Hat gets them to the booth. No hat leaves without a scan. Every scan is a live HubSpot contact.</div>
             </div>
             <div class="show-card">
               <div class="show-tag">Conversations</div>
               <div class="show-title">15+ qualified meetings</div>
-              <div class="show-body">Target: 15 or more qualified conversations booked at or directly from the show. Agree the definition of qualified with Malcolm before show day.</div>
+              <div class="show-body">Target 15 or more qualified conversations booked at or from the show. Hat holders are pre-qualified — the hook already did the first filter.</div>
+            </div>
+            <div class="show-card">
+              <div class="show-tag">Pipeline</div>
+              <div class="show-title">Follow-up within 2 hours</div>
+              <div class="show-body">Every scan triggers a personalised HubSpot sequence. No manual export. No spreadsheet handover. Leads are live before the show floor closes.</div>
             </div>
             <div class="show-card">
               <div class="show-tag">Design Partner</div>
               <div class="show-title">One ICP commitment</div>
-              <div class="show-body">One case-study or design-partner commitment closed at the event. That reference changes every US conversation that follows.</div>
-            </div>
-            <div class="show-card">
-              <div class="show-tag">VIP Buyers</div>
-              <div class="show-title">Complimentary buyer pass</div>
-              <div class="show-body">Invite prospects with the HITEC VIP Buyer Pass link. Valid for qualified hospitality buyers (hotels, resorts, casinos). Use in outreach now. Pre-show attendee list is available: password hitecSA26.</div>
+              <div class="show-body">One case-study or design-partner commitment closed at the event. That US reference changes every conversation that follows.</div>
             </div>
           </div>
         </div>
