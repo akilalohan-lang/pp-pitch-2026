@@ -26,7 +26,8 @@
   --green: #10b981;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--bg); height: 100%; overflow: hidden; }
+html { background: var(--bg); }
+body { background: var(--bg); height: 100dvh; overflow: hidden; }
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--body);
@@ -54,7 +55,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 }
 
 /* ─── App shell ─── */
-.app { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
+.app { display: grid; grid-template-columns: 300px 1fr; height: 100dvh; }
 
 /* ─── Checklist ─── */
 .checklist { display: flex; flex-direction: column; gap: 0; margin-top: 6px; }
@@ -117,7 +118,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 
 /* ─── Responsive ─── */
 
-/* ── iMac / large desktop (1600px+): default styles apply ── */
+/* ── RESPONSIVE ── */
 
 /* Large laptop (1280–1600px) */
 @media (max-width: 1600px) {
@@ -127,118 +128,145 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 /* MacBook 14/16" (1100–1280px) */
 @media (max-width: 1280px) {
   .app { grid-template-columns: 240px 1fr; }
-  .slide-left { padding: 40px 48px 100px; }
-  .slide-left h2 { font-size: clamp(24px, 3vw, 42px); }
-  .stat-num { font-size: 26px; }
-  .pillar-num { font-size: 28px; }
+  .slide-left { padding: 36px 44px 90px; }
+  .slide-left h2 { font-size: clamp(22px, 2.8vw, 40px); }
+  .stat-num { font-size: 28px; }
   .booth-price { font-size: 22px; }
 }
 
-/* MacBook 13" / narrow laptop (860–1100px) */
+/* MacBook 13" / narrow laptop (900–1100px) */
 @media (max-width: 1100px) {
   .app { grid-template-columns: 200px 1fr; }
   .sb { padding: 16px 10px 14px; }
-  .sb-logo { height: 42px; }
-  .slide-left { padding: 36px 32px 88px; }
-  .slide-left h2 { font-size: clamp(22px, 2.8vw, 38px); }
-  .stats-row { gap: 8px; }
+  .sb-logo { height: 40px; }
+  .slide-left { padding: 32px 30px 84px; }
+  .slide-left h2 { font-size: clamp(20px, 2.6vw, 36px); }
+  .stats-row { gap: 10px; }
   .concept-card, .show-card { padding: 12px; }
   .bspec-grid { gap: 6px; }
-  .pkg-items { flex-direction: column; gap: 4px; }
-  .pkg-plus { display: none; }
-  .pkg-option { padding: 10px 12px; }
+  .booth-price { font-size: 20px; }
 }
 
-/* Tablet landscape / iPad Pro 12.9" (768–860px) */
-@media (max-width: 860px) {
-  .app { grid-template-columns: 1fr; }
+/* ── TABLET & MOBILE: sidebar goes off-canvas, slides stack ── */
+@media (max-width: 900px) {
+  /* Layout */
+  .app { grid-template-columns: 1fr; height: 100dvh; }
+
+  /* Sidebar: off-canvas drawer */
   .sb {
     position: fixed; left: 0; top: 0; bottom: 0; width: 280px; z-index: 100;
     transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
-    box-shadow: 6px 0 32px rgba(15,23,42,.14); height: 100%;
+    box-shadow: 6px 0 32px rgba(15,23,42,.14); height: 100dvh;
   }
   .sb.is-open { transform: translateX(0); }
   .sb-toggle { display: flex; }
+
+  /* Slides: vertical stack — content top, image bottom */
   .slide { flex-direction: column; }
+
+  /* Content panel: scrollable, takes ~55% of screen */
   .slide-left {
-    flex: 0 0 auto; padding: 58px 28px 24px;
-    justify-content: flex-start; max-height: 55vh; overflow-y: auto;
+    flex: 0 0 55dvh;
+    padding: 56px 28px 20px;
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .slide-right { flex: 1; min-height: 220px; }
-  .slide-left h2 { font-size: clamp(20px, 4.5vw, 34px); letter-spacing: -.6px; margin-bottom: 12px; }
+  .slide-left h2 { font-size: clamp(20px, 4vw, 32px); letter-spacing: -.5px; margin-bottom: 12px; }
   .slide-left p.lead { font-size: 14px; margin-bottom: 14px; }
-  .stats-row { gap: 8px; }
+  .slide-eyebrow { margin-bottom: 10px; }
+
+  /* Image panel: fills rest */
+  .slide-right { flex: 1; min-height: 0; }
+  .slide-right img.char { height: 85%; }
+
+  /* Component tweaks */
+  .stats-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
   .stat-num { font-size: 22px; }
+  .stat-card { padding: 12px 0 4px; }
   .pillars { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .pillar-num { font-size: 24px; }
-  .concept-grid { grid-template-columns: 1fr; gap: 8px; }
-  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .participant-panel { padding: 18px 16px; gap: 10px; }
-  .participant-photo { width: 44px; height: 44px; }
-  .participant-initials { width: 44px; height: 44px; font-size: 16px; }
-  .slide-footer { left: 14px; right: 14px; bottom: 14px; }
-  .nav-arrows { bottom: 88px; right: 14px; }
+  .pillar-num { font-size: 22px; }
   .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .slide-right img.char { height: 90%; }
-  .booth-price { font-size: 22px; }
+  .booth-price { font-size: 20px; }
   .pkg-options { gap: 6px; margin-top: 10px; }
-  .pkg-items { flex-direction: row; }
-  .pkg-plus { display: block; }
+  .concept-grid { gap: 8px; }
+  .concept-card, .show-card { padding: 12px; }
+  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .participant-panel { padding: 16px; gap: 10px; }
+  .participant-photo, .participant-initials { width: 44px; height: 44px; }
+  .participant-initials { font-size: 16px; }
+  .statement-block { padding: 14px 18px; }
+  .statement-block p { font-size: 14px; }
+
+  /* Footer & nav */
+  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; }
+  .nav-arrows { bottom: 92px; right: 14px; }
 }
 
-/* iPad portrait / large tablet (600–768px) */
+/* Tablet portrait (600–768px) */
 @media (max-width: 768px) {
-  .slide-left { padding: 56px 22px 20px; max-height: 52vh; }
-  .slide-right { min-height: 240px; }
-  .slide-left h2 { font-size: clamp(18px, 5vw, 30px); margin-bottom: 10px; }
-  .slide-eyebrow { margin-bottom: 10px; }
+  .slide-left { flex: 0 0 58dvh; padding: 54px 22px 16px; }
+  .slide-left h2 { font-size: clamp(18px, 4.5vw, 28px); margin-bottom: 10px; }
   .stats-row { grid-template-columns: repeat(3,1fr); gap: 6px; }
-  .stat-card { padding: 10px 12px; }
   .stat-num { font-size: 20px; }
-  .stat-label { font-size: 11px; }
+  .stat-label { font-size: 10.5px; }
   .pillars { gap: 6px; }
-  .pillar { padding: 10px 12px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-  .cl-item { padding: 8px 0; }
+  .pillar { padding: 8px 0 0; }
+  .pillar-num { font-size: 20px; }
+  .pillar-title { font-size: 12px; }
+  .pillar-body { font-size: 11px; }
+  .bspec-grid { gap: 6px; }
+  .bspec-val { font-size: 13px; }
+  .cl-item { padding: 7px 0; }
   .cl-title { font-size: 12px; }
   .cl-desc { font-size: 11px; }
-  .pkg-items { flex-direction: column; gap: 4px; }
-  .pkg-plus { display: none; }
   .pkg-item-name { font-size: 11px; }
+  .pkg-item-price { font-size: 12px; }
 }
 
-/* Mobile / iPhone (up to 600px) */
+/* Mobile (up to 600px) */
 @media (max-width: 600px) {
-  .slide-left { padding: 52px 16px 16px; max-height: 58vh; }
-  .slide-right { min-height: 160px; }
-  .slide-left h2 { font-size: clamp(17px, 5.5vw, 26px); letter-spacing: -.4px; margin-bottom: 10px; }
-  .slide-left p.lead { font-size: 13.5px; margin-bottom: 12px; }
+  .slide-left { flex: 0 0 62dvh; padding: 50px 16px 100px; }
+  .slide-right { flex: 1; min-height: 120px; }
+  .slide-left h2 { font-size: clamp(17px, 5vw, 24px); letter-spacing: -.3px; margin-bottom: 8px; }
+  .slide-left p.lead { font-size: 13px; margin-bottom: 10px; }
   .stats-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-num { font-size: 18px; }
   .pillars { grid-template-columns: 1fr 1fr; gap: 6px; }
-  .show-grid { grid-template-columns: 1fr; gap: 6px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-  .concept-grid { gap: 6px; }
-  .participant-panel { padding: 12px 14px; gap: 8px; }
-  .participant-card { gap: 10px; }
-  .slide-footer { font-size: 10px; bottom: 8px; left: 8px; right: 8px; }
-  .nav-arrows { bottom: 100px; right: 10px; gap: 6px; }
-  .nav-arrow { width: 30px; height: 30px; }
-  .booth-price { font-size: 20px; }
-  .pkg-options { gap: 5px; margin-top: 8px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+  .bspec { padding: 8px 10px; }
   .bspec-val { font-size: 12px; }
   .bspec-label { font-size: 9px; }
-  .statement-block p { font-size: 13.5px; }
+  .booth-price { font-size: 18px; }
+  .show-grid { grid-template-columns: 1fr; gap: 6px; }
+  .concept-card { padding: 10px 12px; gap: 10px; }
+  .pkg-items { flex-direction: column; gap: 3px; }
+  .pkg-plus { display: none; }
+  .pkg-option { padding: 9px 11px; }
+  .participant-panel { padding: 12px; gap: 8px; }
+  .participant-card { padding: 12px 14px; gap: 10px; }
+  .participant-photo, .participant-initials { width: 38px; height: 38px; }
+  .participant-name { font-size: 13px; }
+  .participant-note { font-size: 11px; }
+  .statement-block p { font-size: 13px; }
+  .slide-footer { left: 10px; right: 10px; bottom: 8px; }
+  .nav-arrows { bottom: 96px; right: 10px; gap: 6px; }
+  .nav-arrow { width: 30px; height: 30px; }
 }
 
-/* Small mobile (up to 390px) */
-@media (max-width: 390px) {
-  .slide-left { padding: 48px 12px 12px; }
+/* Small mobile — iPhone SE / 390px */
+@media (max-width: 420px) {
+  .slide-left { flex: 0 0 65dvh; padding: 48px 14px 96px; }
   .slide-left h2 { font-size: 17px; }
-  .slide-left p.lead { font-size: 13px; }
-  .stats-row { grid-template-columns: 1fr; }
-  .pillars { grid-template-columns: 1fr; }
+  .slide-left p.lead { font-size: 12.5px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .pillars { grid-template-columns: 1fr 1fr; }
   .bspec-grid { grid-template-columns: 1fr; }
-  .pkg-option { padding: 9px 10px; }
+  .show-grid { grid-template-columns: 1fr; }
+  .checklist { gap: 0; }
+  .cl-item { padding: 6px 0; }
+  .cl-title { font-size: 11.5px; }
+  .cl-desc { font-size: 10.5px; }
 }
 
 /* ─── Sidebar ─── */
@@ -247,7 +275,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   border-right: 1px solid var(--border);
   padding: 22px 16px 18px;
   display: flex; flex-direction: column;
-  height: 100vh; overflow: hidden;
+  height: 100dvh; overflow: hidden;
 }
 .sb-brand {
   display: flex; flex-direction: column; gap: 10px;
@@ -312,7 +340,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 }
 
 /* ─── Main ─── */
-.main { position: relative; height: 100vh; overflow: hidden; }
+.main { position: relative; height: 100dvh; overflow: hidden; }
 .slides { position: relative; height: 100%; }
 
 /* ─── Slide base: split layout ─── */
