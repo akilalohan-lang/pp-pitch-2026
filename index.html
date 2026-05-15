@@ -538,6 +538,64 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 .show-title { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 5px; line-height: 1.3; }
 .show-body { font-size: 12px; color: var(--body); line-height: 1.55; }
 
+/* ─── Hat slide ─── */
+.hat-zoom-panel { cursor: zoom-in; position: relative; }
+.hat-zoom-img { width:100%; height:100%; object-fit:cover; object-position:center; transition: transform .3s ease; }
+.hat-zoom-panel:hover .hat-zoom-img { transform: scale(1.03); }
+.zoom-hint {
+  position:absolute; bottom:16px; right:16px;
+  background:rgba(0,0,0,.55); color:#fff; font-size:11px; font-weight:600;
+  padding:6px 10px; border-radius:20px; display:flex; align-items:center; gap:6px;
+  pointer-events:none; letter-spacing:.04em;
+}
+.hat-rules { display:flex; flex-direction:column; gap:12px; margin:20px 0 16px; }
+.hat-rule { display:flex; align-items:baseline; gap:14px; padding-bottom:12px; border-bottom:1px solid var(--border-soft); }
+.hat-rule:last-child { border-bottom:none; }
+.hat-rule-num { font-size:36px; font-weight:200; letter-spacing:-2px; line-height:1; min-width:48px; }
+.hat-rule-text { font-size:13.5px; color:var(--body); line-height:1.5; }
+
+/* Hat lightbox */
+.hat-lightbox {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(0,0,0,.88); align-items:center; justify-content:center;
+  cursor:zoom-out;
+}
+.hat-lightbox.is-open { display:flex; }
+.hat-lightbox img { max-width:90vw; max-height:90dvh; object-fit:contain; border-radius:12px; box-shadow:0 24px 64px rgba(0,0,0,.6); }
+.hat-lb-close {
+  position:absolute; top:20px; right:20px;
+  width:40px; height:40px; border-radius:50%; border:none;
+  background:rgba(255,255,255,.15); color:#fff; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s;
+}
+.hat-lb-close:hover { background:rgba(255,255,255,.28); }
+
+/* Who qualifies */
+.qualify-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+.qualify-card { padding:16px; border-radius:14px; border:1px solid var(--border-soft); background:var(--softer); }
+.qualify-card.primary { border-color:rgba(124,93,255,.3); background:linear-gradient(135deg,rgba(169,86,255,.06),rgba(55,102,254,.04)); }
+.qualify-icon { font-size:20px; margin-bottom:8px; }
+.qualify-label { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; margin-bottom:5px; }
+.qualify-title { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:6px; line-height:1.3; }
+.qualify-body { font-size:11.5px; color:var(--body); line-height:1.55; }
+
+/* Scan steps */
+.scan-steps { display:flex; flex-direction:column; gap:0; margin-top:16px; }
+.scan-step { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid var(--border-soft); align-items:flex-start; }
+.scan-step:last-child { border-bottom:none; }
+.scan-num { font-size:22px; font-weight:200; font-family:'JetBrains Mono',monospace; letter-spacing:-1px; line-height:1; min-width:28px; }
+.scan-title { font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:4px; }
+.scan-body { font-size:12px; color:var(--body); line-height:1.5; }
+
+/* Claim cards */
+.claim-cards { display:flex; flex-direction:column; gap:0; margin-top:16px; }
+.claim-card { display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-bottom:1px solid var(--border-soft); }
+.claim-card:last-child { border-bottom:none; }
+.claim-icon { width:36px; height:36px; border-radius:10px; background:rgba(124,93,255,.1); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.claim-title { font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:3px; }
+.claim-body { font-size:12px; color:var(--body); line-height:1.5; }
+
 /* ─── Nav arrows ─── */
 .nav-arrows {
   position: fixed; bottom: 26px; right: 26px;
@@ -903,10 +961,149 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
         </div>
       </section>
 
-      <!-- 08 · Show Experience -->
+      <!-- 08 · The Hat -->
+      <section class="slide" data-title="The Hat">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">08 / Lead Hook</span></div>
+          <h2>The hat that gets <span class="grad">them to the booth.</span></h2>
+          <p class="lead">100 cream cowboy hats. PurchasePlus emblem stitched inside and on the side band. Low-key enough to wear. Exclusive enough to want.</p>
+          <div class="hat-rules">
+            <div class="hat-rule">
+              <div class="hat-rule-num grad">100</div>
+              <div class="hat-rule-text">hats in total. Once they're gone, they're gone.</div>
+            </div>
+            <div class="hat-rule">
+              <div class="hat-rule-num grad">0</div>
+              <div class="hat-rule-text">hats handed out without a qualified lead scan. No exceptions.</div>
+            </div>
+          </div>
+          <p class="kicker">Logo on the side band and inside the crown. Not on the front. Wearable anywhere. That's the point.</p>
+        </div>
+        <div class="slide-right hat-zoom-panel">
+          <img src="Images/hat.jpg" alt="PurchasePlus cowboy hat" class="hat-zoom-img" id="hatImg">
+          <div class="zoom-hint">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            Click to zoom
+          </div>
+        </div>
+      </section>
+
+      <!-- Hat lightbox -->
+      <div class="hat-lightbox" id="hatLightbox">
+        <button class="hat-lb-close" id="hatLbClose" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+        <img src="Images/hat.jpg" alt="PurchasePlus cowboy hat — zoomed">
+      </div>
+
+      <!-- 09 · Who Qualifies -->
+      <section class="slide" data-title="Who Qualifies">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">09 / Step 1 · Spot Them</span></div>
+          <h2>You'll know them <span class="grad">when you see them.</span></h2>
+          <p class="lead">Not every badge gets a keyring. Look for these two profiles and hand it over.</p>
+          <div class="qualify-grid">
+            <div class="qualify-card primary">
+              <div class="qualify-icon">🏨</div>
+              <div class="qualify-label grad">Profile A — The Operator</div>
+              <div class="qualify-title">Someone from a hotel</div>
+              <div class="qualify-body">General Manager, Director of F&B, Executive Chef, Revenue Manager, Procurement Lead, or anyone who owns a hospitality cost centre. They are the buyer.</div>
+            </div>
+            <div class="qualify-card secondary">
+              <div class="qualify-icon">🤝</div>
+              <div class="qualify-label grad">Profile B — The Connector</div>
+              <div class="qualify-title">Someone who can walk a hotel person in</div>
+              <div class="qualify-body">A consultant, integration partner, reseller, or industry contact who commits to bringing a hotel operator to our booth before the show closes.</div>
+            </div>
+          </div>
+          <p class="kicker">If they don't fit either profile, they don't get a keyring. The hat stays in the box.</p>
+        </div>
+        <div class="slide-right">
+          <img src="Images/keyring.jpg" alt="PurchasePlus keyring" style="height:100%;width:100%;object-fit:contain;object-position:center;padding:32px;box-sizing:border-box;background:var(--grad-img);">
+        </div>
+      </section>
+
+      <!-- 10 · Scan & Register -->
+      <section class="slide" data-title="Scan & Register">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">10 / Step 2 · Scan &amp; Register</span></div>
+          <h2>Flip it over. <span class="grad">Scan. Done.</span></h2>
+          <p class="lead">Hand them the keyring. The back has a QR code. One scan opens the registration form. Takes 60 seconds to fill in.</p>
+          <div class="scan-steps">
+            <div class="scan-step">
+              <div class="scan-num grad">01</div>
+              <div class="scan-detail">
+                <div class="scan-title">Hand over the keyring</div>
+                <div class="scan-body">Front shows the PurchasePlus emblem. Flip it to reveal the QR code on the back.</div>
+              </div>
+            </div>
+            <div class="scan-step">
+              <div class="scan-num grad">02</div>
+              <div class="scan-detail">
+                <div class="scan-title">They scan with their phone</div>
+                <div class="scan-body">Opens directly to the registration landing page. No app needed. Works on any phone.</div>
+              </div>
+            </div>
+            <div class="scan-step">
+              <div class="scan-num grad">03</div>
+              <div class="scan-detail">
+                <div class="scan-title">Form takes 60 seconds</div>
+                <div class="scan-body">Name, property, role, email. That's it. They hit submit and get a confirmation to show at the booth.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right">
+          <img src="Images/form_landing.jpg" alt="Registration form on tablet" style="height:100%;width:100%;object-fit:cover;object-position:center top;">
+        </div>
+      </section>
+
+      <!-- 11 · Claim the Hat -->
+      <section class="slide" data-title="Claim the Hat">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">11 / Step 3 · Claim It</span></div>
+          <h2>Show confirmation. <span class="grad">Get the hat.</span></h2>
+          <p class="lead">They walk to booth 3715. They show us the confirmation on their phone. They leave wearing a PurchasePlus cowboy hat.</p>
+          <div class="claim-cards">
+            <div class="claim-card">
+              <div class="claim-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:var(--purple)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+              </div>
+              <div>
+                <div class="claim-title">They come to us</div>
+                <div class="claim-body">Booth #3715 Enhanced Plus. The confirmation is their ticket in.</div>
+              </div>
+            </div>
+            <div class="claim-card">
+              <div class="claim-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:var(--purple)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              </div>
+              <div>
+                <div class="claim-title">We verify and hand it over</div>
+                <div class="claim-body">Check the confirmation. Cross them off the list. Hand them a hat and start the conversation.</div>
+              </div>
+            </div>
+            <div class="claim-card">
+              <div class="claim-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:var(--purple)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <div>
+                <div class="claim-title">We get a qualified lead in our CRM</div>
+                <div class="claim-body">Name, role, property, and contact already captured. Ready for follow-up before the show floor closes.</div>
+              </div>
+            </div>
+          </div>
+          <p class="kicker">The hat is the hook. The conversation is the goal. The CRM entry is the outcome.</p>
+        </div>
+        <div class="slide-right">
+          <img src="Images/hat.jpg" alt="PurchasePlus cowboy hat" style="height:100%;width:100%;object-fit:cover;object-position:center top;filter:brightness(1.02);">
+        </div>
+      </section>
+
+      <!-- 12 · Show Experience -->
       <section class="slide" data-title="Show Experience">
         <div class="slide-left">
-          <div class="slide-eyebrow"><span class="grad">08 / Show Experience</span></div>
+          <div class="slide-eyebrow"><span class="grad">12 / Show Experience</span></div>
           <h2>Three days. <span class="grad">One agenda.</span></h2>
           <p class="lead">Every badge scan routes into the follow-up pipeline. Every conversation has a job. No lead left in a spreadsheet after the show closes.</p>
           <div class="show-grid">
@@ -1037,6 +1234,20 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     touchX = null;
     if (Math.abs(dx) > 48) { dx < 0 ? go(current + 1) : go(current - 1); }
   }, { passive: true });
+})();
+
+// Hat zoom lightbox
+(function(){
+  var img = document.getElementById('hatImg');
+  var lb  = document.getElementById('hatLightbox');
+  var cls = document.getElementById('hatLbClose');
+  if (!img || !lb) return;
+  function open()  { lb.classList.add('is-open'); }
+  function close() { lb.classList.remove('is-open'); }
+  img.addEventListener('click', open);
+  lb.addEventListener('click', function(e){ if(e.target===lb) close(); });
+  cls.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
 })();
 </script>
 
