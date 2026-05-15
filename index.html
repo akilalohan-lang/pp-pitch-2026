@@ -386,17 +386,19 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 .show-body { font-size: 13px; color: var(--body); line-height: 1.55; }
 
 /* ─── Hat slide — stacked panel ─── */
-.hat-zoom-panel { cursor: zoom-in; position: relative; display:flex; flex-direction:column; overflow:hidden; }
-.hat-half { flex:1; overflow:hidden; position:relative; }
-.hat-half img { position:absolute; top:0; left:0; width:100%; height:auto; }
-.hat-btm img { top:auto; bottom:0; }
-.zoom-hint {
-  position:absolute; bottom:14px; right:14px;
-  background:rgba(0,0,0,.55); color:#fff; font-size:11px; font-weight:600;
-  padding:5px 10px; border-radius:20px; display:flex; align-items:center; gap:6px;
-  pointer-events:none; letter-spacing:.04em;
+.hat-zoom-panel { cursor: zoom-in; position: relative; display:flex; flex-direction:column; overflow:hidden; align-items:center; justify-content:center; background:var(--grad-img); }
+.hat-hero-img { width:100%; height:100%; object-fit:contain; object-position:center; padding:20px; box-sizing:border-box; }
+.hat-view-cta {
+  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  background:rgba(17,10,35,.82); color:#fff; font-size:12px; font-weight:600;
+  padding:8px 18px; border-radius:20px; border:none; cursor:pointer;
+  display:flex; align-items:center; gap:8px; white-space:nowrap;
+  backdrop-filter:blur(8px); letter-spacing:.03em;
+  transition: background .15s;
 }
+.hat-view-cta:hover { background:rgba(124,93,255,.9); }
 .hat-rules { display:flex; flex-direction:column; gap:10px; margin:18px 0 14px; }
+
 .hat-rule { display:flex; align-items:baseline; gap:14px; padding-bottom:10px; border-bottom:1px solid var(--border-soft); }
 .hat-rule:last-child { border-bottom:none; }
 .hat-rule-num { font-size:38px; font-weight:200; letter-spacing:-2px; line-height:1; min-width:52px; }
@@ -469,7 +471,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 
 /* ─── Nav arrows ─── */
 .nav-arrows {
-  position: fixed; bottom: 26px; right: 26px;
+  position: fixed; bottom: 88px; right: 26px;
   display: flex; flex-direction: column; gap: 8px; z-index: 30;
 }
 .nav-arrow {
@@ -516,56 +518,75 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   .sb.is-open { transform: translateX(0); }
   .sb-toggle { display: flex; }
 
-  /* ── Slide: column — image on TOP, content below ── */
-  .slide { flex-direction: column; }
+  /* ══ SCROLL LAYOUT: slides become a continuous scrollable page ══ */
+  .main { overflow-y: auto; height: 100dvh; -webkit-overflow-scrolling: touch; }
+  .slides { position: static; height: auto; display: flex; flex-direction: column; }
 
-  /* Image/visual header — pinned to top */
+  .slide {
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    border-bottom: 2px solid var(--border-soft);
+    scroll-margin-top: 0;
+  }
+
+  /* Image section — full width, natural height, contained */
   .slide-right {
     order: -1;
-    flex: 0 0 38dvh;
-    min-height: 0;
+    flex: none;
+    width: 100%;
+    min-height: 280px;
+    max-height: 60dvh;
     border-left: none;
     border-bottom: 1px solid var(--border-soft);
+    overflow: hidden;
   }
-  .slide-right img.char { height: 82%; width: auto; }
+  .slide-right img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
+  .slide-right img.char { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
 
-  /* Content panel — fills remaining screen, scrollable */
+  /* Content panel — natural height, good padding */
   .slide-left {
-    flex: 1;
-    min-height: 0;
-    padding: 22px 32px 80px;
+    flex: none;
+    width: 100%;
+    height: auto;
+    padding: 28px 32px 44px;
     justify-content: flex-start;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
-  .slide-left h2 { font-size: clamp(22px, 2.8vw, 36px); letter-spacing: -.4px; margin-bottom: 12px; }
-  .slide-left p.lead { font-size: 15px; margin-bottom: 16px; }
-  .slide-eyebrow { margin-bottom: 10px; }
+  .slide-left h2 { font-size: clamp(26px, 4vw, 40px); letter-spacing: -.4px; margin-bottom: 14px; }
+  .slide-left p.lead { font-size: 16px; margin-bottom: 18px; }
+  .slide-eyebrow { margin-bottom: 12px; }
 
   /* ── Component adjustments ── */
-  .stats-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .stat-num { font-size: 24px; }
-  .stat-card { padding: 12px 0 4px; }
-  .pillars { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .pillar-num { font-size: 24px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .booth-price { font-size: 22px; }
-  .pkg-options { gap: 8px; margin-top: 12px; }
-  .concept-grid { gap: 8px; }
-  .concept-card, .show-card { padding: 12px; }
-  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .participant-panel { padding: 14px 18px; gap: 10px; overflow-y: auto; }
-  .participant-photo, .participant-initials { width: 46px; height: 46px; }
-  .participant-initials { font-size: 16px; }
-  .statement-block { padding: 14px 18px; }
-  .statement-block p { font-size: 15px; }
-  .hat-rules { gap: 14px; margin-top: 8px; }
-  .hat-rule-num { font-size: 34px; min-width: 46px; }
-  .hat-rule-text { font-size: 14px; }
+  .stats-row { grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .stat-num { font-size: 26px; }
+  .stat-card { padding: 14px 0 6px; }
+  .pillars { grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .pillar-num { font-size: 26px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .booth-price { font-size: 24px; }
+  .pkg-options { gap: 10px; margin-top: 14px; }
+  .concept-grid { gap: 10px; }
+  .concept-card, .show-card { padding: 14px; }
+  .show-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .participant-panel { padding: 20px; gap: 12px; min-height: 280px; }
+  .participant-photo, .participant-initials { width: 50px; height: 50px; }
+  .participant-initials { font-size: 18px; }
+  .statement-block { padding: 16px 20px; }
+  .statement-block p { font-size: 16px; }
+  .hat-rules { gap: 16px; margin-top: 10px; }
+  .hat-rule-num { font-size: 38px; min-width: 50px; }
+  .hat-rule-text { font-size: 15px; }
+  .hat-zoom-panel { min-height: 280px; max-height: 60dvh; cursor: zoom-in; }
 
-  /* ── Footer & nav ── */
-  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; }
-  .nav-arrows { bottom: 12px; right: 14px; }
+  /* Footer: sticky to bottom of viewport */
+  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; position: fixed; }
+  .nav-arrows { bottom: 12px; right: 14px; bottom: 50px; }
 }
 
 /* ── Tablet portrait (769–900px): tighten image strip ── */
@@ -1016,12 +1037,11 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
           <p class="kicker">Logo on the side band and inside the crown. Not on the front. Wearable anywhere. That's the point.</p>
         </div>
         <div class="slide-right hat-zoom-panel" id="hatZoomPanel">
-          <div class="hat-half hat-top"><img src="Images/hat.jpg" alt=""></div>
-          <div class="hat-half hat-btm"><img src="Images/hat.jpg" alt=""></div>
-          <div class="zoom-hint">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Click to zoom
-          </div>
+          <img src="Images/hat_hero.jpg" alt="PurchasePlus cowboy hat" class="hat-hero-img">
+          <button class="hat-view-cta" id="hatOpenBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            View all 4 photos
+          </button>
         </div>
       </section>
 
@@ -1032,10 +1052,10 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
         </button>
         <div class="hat-carousel">
           <div class="hat-slides" id="hatSlides">
-            <div class="hat-slide" style="background-position:0% 0%"></div>
-            <div class="hat-slide" style="background-position:100% 0%"></div>
-            <div class="hat-slide" style="background-position:0% 100%"></div>
-            <div class="hat-slide" style="background-position:100% 100%"></div>
+            <div class="hat-slide"><img src="Images/hat-1.jpg" alt="Hat photo 1"></div>
+            <div class="hat-slide"><img src="Images/hat-2.jpg" alt="Hat photo 2"></div>
+            <div class="hat-slide"><img src="Images/hat-3.jpg" alt="Hat photo 3"></div>
+            <div class="hat-slide"><img src="Images/hat-4.jpg" alt="Hat photo 4"></div>
           </div>
           <button class="hat-arrow hat-prev" id="hatPrev" aria-label="Previous">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -1152,7 +1172,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
           <p class="kicker">The hat is the hook. The conversation is the goal. The CRM entry is the outcome.</p>
         </div>
         <div class="slide-right">
-          <img src="Images/hat.jpg" alt="PurchasePlus cowboy hat" style="height:100%;width:100%;object-fit:contain;object-position:center;padding:24px;box-sizing:border-box;background:var(--grad-img);">
+          <img src="Images/hats.jpg" alt="PurchasePlus cowboy hats" style="height:100%;width:100%;object-fit:contain;object-position:center;padding:24px;box-sizing:border-box;background:var(--grad-img);">
         </div>
       </section>
 
@@ -1231,15 +1251,54 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     sbList.appendChild(item);
   });
 
+  var mainEl = document.querySelector('.main');
+
+  function isMobile() { return window.innerWidth <= 1100; }
+
   function go(i) {
-    if (i < 0 || i >= total || i === current) return;
-    slides[current].classList.remove('is-active');
-    slides[i].classList.add('is-active');
+    if (i < 0 || i >= total) return;
+    if (!isMobile() && i === current) return;
+    // Update sidebar highlight
     sbList.children[current].classList.remove('is-active');
-    sbList.children[i].classList.add('is-active');
     current = i;
+    sbList.children[current].classList.add('is-active');
+    if (isMobile()) {
+      // Scroll to slide
+      slides[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // Fade slides
+      slides.forEach(function(s, idx) { s.classList.toggle('is-active', idx === i); });
+    }
     updateChrome();
   }
+
+  // IntersectionObserver: update active state while scrolling on mobile
+  if (typeof IntersectionObserver !== 'undefined') {
+    var io = new IntersectionObserver(function(entries) {
+      if (!isMobile()) return;
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          var idx = slides.indexOf(e.target);
+          if (idx >= 0 && idx !== current) {
+            sbList.children[current].classList.remove('is-active');
+            current = idx;
+            sbList.children[current].classList.add('is-active');
+            updateChrome();
+          }
+        }
+      });
+    }, { threshold: 0.3, rootMargin: '-5% 0px -60% 0px' });
+    slides.forEach(function(s) { io.observe(s); });
+  }
+
+  // On resize: reset layout
+  window.addEventListener('resize', function() {
+    if (!isMobile()) {
+      slides.forEach(function(s, idx) { s.classList.toggle('is-active', idx === current); });
+    } else {
+      slides.forEach(function(s) { s.classList.remove('is-active'); });
+    }
+  });
 
   function updateChrome() {
     const num = String(current + 1).padStart(2, '0');
@@ -1281,10 +1340,11 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     sbList.addEventListener('click', closeSb);
   }
 
-  // ── Touch swipe ──
+  // ── Touch swipe (desktop-slide mode only) ──
   let touchX = null;
   document.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; }, { passive: true });
   document.addEventListener('touchend', function(e) {
+    if (isMobile()) { touchX = null; return; } // let native scroll handle mobile
     if (touchX === null) return;
     const dx = e.changedTouches[0].clientX - touchX;
     touchX = null;
@@ -1295,6 +1355,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 // Hat zoom carousel lightbox
 (function(){
   var panel  = document.getElementById('hatZoomPanel');
+  var openBtn = document.getElementById('hatOpenBtn');
   var lb     = document.getElementById('hatLightbox');
   var cls    = document.getElementById('hatLbClose');
   var prev   = document.getElementById('hatPrev');
@@ -1315,6 +1376,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   function close() { lb.classList.remove('is-open'); }
 
   panel.addEventListener('click', open);
+  if (openBtn) openBtn.addEventListener('click', function(e){ e.stopPropagation(); open(); });
   cls.addEventListener('click', close);
   prev.addEventListener('click', function(e){ e.stopPropagation(); goTo(current - 1); });
   next.addEventListener('click', function(e){ e.stopPropagation(); goTo(current + 1); });
@@ -1360,14 +1422,14 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   backdrop-filter: blur(18px) saturate(1.6);
   -webkit-backdrop-filter: blur(18px) saturate(1.6);
   border: 1px solid rgba(169,86,255,.28);
-  border-radius: 16px;
-  padding: 12px 16px;
-  display: flex; flex-direction: column; gap: 10px;
-  width: 320px;
+  border-radius: 40px;
+  padding: 8px 14px;
+  display: flex; flex-direction: row; align-items: center; gap: 10px;
+  width: 300px;
   box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 0 1px rgba(169,86,255,.1);
   color: #fff;
 }
-.mp-controls { display: flex; align-items: center; gap: 10px; }
+.mp-controls { display: contents; }
 .mp-btn {
   width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; flex-shrink: 0;
   background: linear-gradient(135deg,#a956ff,#3766fe);
@@ -1411,10 +1473,17 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   50%      { box-shadow: 0 0 0 6px rgba(169,86,255,0); }
 }
 /* Responsive */
-@media (max-width: 600px) {
-  .mp { width: calc(100vw - 24px); right: 12px; bottom: 12px; padding: 10px 12px; gap: 8px; }
+@media (max-width: 1100px) {
+  .mp {
+    top: 10px; bottom: auto; right: 10px;
+    width: auto; padding: 6px 12px; gap: 8px; border-radius: 30px;
+  }
+  .mp-progress-wrap { display: none; }
   .mp-vol-wrap { display: none; }
-  .mp-vol { width: 60px; }
+}
+@media (max-width: 600px) {
+  .mp { padding: 5px 10px; gap: 6px; }
+  .mp-btn { width: 26px; height: 26px; }
 }
 </style>
 <script>
