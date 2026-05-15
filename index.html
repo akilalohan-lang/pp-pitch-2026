@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HITEC 2026 · PurchasePlus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/logo-emblem.png">
+<style>
+:root {
+  --grad: linear-gradient(90deg, #a956ff 0%, #7c5dff 50%, #3766fe 100%);
+  --grad-soft: linear-gradient(135deg, #f5edff 0%, #eaf1ff 100%);
+  --grad-img: linear-gradient(160deg, #f0e8ff 0%, #e5edff 100%);
+  --purple: #7c5dff;
+  --blue: #3766fe;
+  --ink: #111827;
+  --ink-soft: #1f2937;
+  --body: #4B5563;
+  --muted: #9ca3af;
+  --softer: #fafafa;
+  --border: #e5e7eb;
+  --border-soft: #f3f4f6;
+  --bg: #ffffff;
+  --green: #10b981;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.grad {
+  background: linear-gradient(90deg, #a956ff 0%, #a956ff 20%, #7c5dff 50%, #3766fe 80%, #3766fe 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500;
+  animation: gradPulse 5s linear infinite;
+}
+@keyframes gradPulse {
+  0%   { background-position: 200% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ─── App shell ─── */
+.app { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
+
+/* ─── Checklist ─── */
+.checklist { display: flex; flex-direction: column; gap: 0; margin-top: 6px; }
+.cl-item { display: flex; align-items: flex-start; gap: 13px; padding: 10px 0; border-bottom: 1px solid var(--border-soft); }
+.cl-item:last-child { border-bottom: none; }
+.cl-check {
+  width: 19px; height: 19px; border-radius: 5px; border: 2px solid var(--border);
+  flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.cl-check.done { background: var(--green); border-color: var(--green); }
+.cl-check.done::after { content: ''; width: 9px; height: 5px; border: 2px solid #fff; border-top: none; border-right: none; transform: rotate(-45deg) translateY(-1px); display: block; }
+.cl-check.urgent { border-color: #ef4444; background: rgba(239,68,68,.06); }
+.cl-check.soon { border-color: #f59e0b; background: rgba(245,158,11,.06); }
+.cl-check.active { border-color: var(--purple); background: rgba(124,93,255,.06); }
+.cl-body { flex: 1; min-width: 0; }
+.cl-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
+.cl-title { font-size: 13px; font-weight: 600; color: var(--ink); text-wrap: balance; }
+.cl-date { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; letter-spacing: .02em; white-space: nowrap; }
+.date-urgent { background: rgba(239,68,68,.1); color: #dc2626; }
+.date-soon { background: rgba(245,158,11,.1); color: #d97706; }
+.date-active { background: rgba(124,93,255,.12); color: var(--purple); }
+.date-future { background: rgba(55,102,254,.09); color: var(--blue); }
+.cl-desc { font-size: 11.5px; font-weight: 400; color: var(--body); line-height: 1.5; }
+
+/* ─── Booth design slide ─── */
+.floorplan-wrap { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f8f9ff; overflow: hidden; }
+.floorplan-img { max-width: 94%; max-height: 88%; object-fit: contain; border-radius: 10px; box-shadow: 0 6px 28px rgba(15,23,42,.12); }
+.bspec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+.bspec { background: var(--softer); border: 1px solid var(--border-soft); border-radius: 10px; padding: 11px 14px; }
+.bspec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 3px; }
+.bspec-val { font-size: 14px; font-weight: 600; color: var(--ink); }
+.booth-price { font-size: 26px; font-weight: 800; margin: 10px 0 4px; letter-spacing: -.02em; }
+.booth-price-note { font-size: 13px; font-weight: 500; color: var(--muted); }
+.booth-img-stack { display: flex; flex-direction: column; gap: 8px; padding: 16px; overflow: hidden; }
+.booth-img-stack img { width: 100%; flex: 1; min-height: 0; object-fit: contain; object-position: center; }
+.pkg-options { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.pkg-option { background: var(--softer); border: 1px solid var(--border-soft); border-radius: 12px; padding: 12px 14px; }
+.pkg-tier { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
+.pkg-tier.essential { color: #3766fe; }
+.pkg-tier.comfortable { color: #7c5dff; }
+.pkg-tier.premium { color: #a956ff; }
+.pkg-items { display: flex; align-items: center; gap: 8px; }
+.pkg-item { flex: 1; }
+.pkg-item-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.pkg-item-name { font-size: 12px; font-weight: 600; color: var(--ink); margin: 2px 0 1px; text-wrap: balance; }
+.pkg-item-price { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pkg-plus { font-size: 16px; font-weight: 300; color: var(--muted); flex-shrink: 0; }
+.pkg-total { font-size: 11px; color: var(--muted); margin-top: 8px; border-top: 1px solid var(--border-soft); padding-top: 6px; }
+
+/* ─── Sidebar toggle (mobile) ─── */
+.sb-toggle {
+  display: none; position: fixed; top: 14px; left: 14px; z-index: 110;
+  width: 36px; height: 36px; background: #fff; border: 1px solid var(--border);
+  border-radius: 9px; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer; box-shadow: 0 2px 8px rgba(15,23,42,.08);
+}
+.sb-toggle span { width: 16px; height: 2px; background: var(--ink); border-radius: 1px; display: block; }
+.sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 99; }
+.sb-overlay.is-open { display: block; }
+
+/* ─── Responsive ─── */
+
+/* ── iMac / large desktop (1600px+): default styles apply ── */
+
+/* Large laptop (1280–1600px) */
+@media (max-width: 1600px) {
+  .app { grid-template-columns: 280px 1fr; }
+}
+
+/* MacBook 14/16" (1100–1280px) */
+@media (max-width: 1280px) {
+  .app { grid-template-columns: 240px 1fr; }
+  .slide-left { padding: 40px 48px 100px; }
+  .slide-left h2 { font-size: clamp(24px, 3vw, 42px); }
+  .stat-num { font-size: 26px; }
+  .pillar-num { font-size: 28px; }
+  .booth-price { font-size: 22px; }
+}
+
+/* MacBook 13" / narrow laptop (860–1100px) */
+@media (max-width: 1100px) {
+  .app { grid-template-columns: 200px 1fr; }
+  .sb { padding: 16px 10px 14px; }
+  .sb-logo { height: 42px; }
+  .slide-left { padding: 36px 32px 88px; }
+  .slide-left h2 { font-size: clamp(22px, 2.8vw, 38px); }
+  .stats-row { gap: 8px; }
+  .concept-card, .show-card { padding: 12px; }
+  .bspec-grid { gap: 6px; }
+  .pkg-items { flex-direction: column; gap: 4px; }
+  .pkg-plus { display: none; }
+  .pkg-option { padding: 10px 12px; }
+}
+
+/* Tablet landscape / iPad Pro 12.9" (768–860px) */
+@media (max-width: 860px) {
+  .app { grid-template-columns: 1fr; }
+  .sb {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 280px; z-index: 100;
+    transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow: 6px 0 32px rgba(15,23,42,.14); height: 100%;
+  }
+  .sb.is-open { transform: translateX(0); }
+  .sb-toggle { display: flex; }
+  .slide { flex-direction: column; }
+  .slide-left {
+    flex: 0 0 auto; padding: 58px 28px 24px;
+    justify-content: flex-start; max-height: 55vh; overflow-y: auto;
+  }
+  .slide-right { flex: 1; min-height: 220px; }
+  .slide-left h2 { font-size: clamp(20px, 4.5vw, 34px); letter-spacing: -.6px; margin-bottom: 12px; }
+  .slide-left p.lead { font-size: 14px; margin-bottom: 14px; }
+  .stats-row { gap: 8px; }
+  .stat-num { font-size: 22px; }
+  .pillars { grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .pillar-num { font-size: 24px; }
+  .concept-grid { grid-template-columns: 1fr; gap: 8px; }
+  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .participant-panel { padding: 18px 16px; gap: 10px; }
+  .participant-photo { width: 44px; height: 44px; }
+  .participant-initials { width: 44px; height: 44px; font-size: 16px; }
+  .slide-footer { left: 14px; right: 14px; bottom: 14px; }
+  .nav-arrows { bottom: 88px; right: 14px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .slide-right img.char { height: 90%; }
+  .booth-price { font-size: 22px; }
+  .pkg-options { gap: 6px; margin-top: 10px; }
+  .pkg-items { flex-direction: row; }
+  .pkg-plus { display: block; }
+}
+
+/* iPad portrait / large tablet (600–768px) */
+@media (max-width: 768px) {
+  .slide-left { padding: 56px 22px 20px; max-height: 52vh; }
+  .slide-right { min-height: 240px; }
+  .slide-left h2 { font-size: clamp(18px, 5vw, 30px); margin-bottom: 10px; }
+  .slide-eyebrow { margin-bottom: 10px; }
+  .stats-row { grid-template-columns: repeat(3,1fr); gap: 6px; }
+  .stat-card { padding: 10px 12px; }
+  .stat-num { font-size: 20px; }
+  .stat-label { font-size: 11px; }
+  .pillars { gap: 6px; }
+  .pillar { padding: 10px 12px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .cl-item { padding: 8px 0; }
+  .cl-title { font-size: 12px; }
+  .cl-desc { font-size: 11px; }
+  .pkg-items { flex-direction: column; gap: 4px; }
+  .pkg-plus { display: none; }
+  .pkg-item-name { font-size: 11px; }
+}
+
+/* Mobile / iPhone (up to 600px) */
+@media (max-width: 600px) {
+  .slide-left { padding: 52px 16px 16px; max-height: 58vh; }
+  .slide-right { min-height: 160px; }
+  .slide-left h2 { font-size: clamp(17px, 5.5vw, 26px); letter-spacing: -.4px; margin-bottom: 10px; }
+  .slide-left p.lead { font-size: 13.5px; margin-bottom: 12px; }
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .pillars { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .show-grid { grid-template-columns: 1fr; gap: 6px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .concept-grid { gap: 6px; }
+  .participant-panel { padding: 12px 14px; gap: 8px; }
+  .participant-card { gap: 10px; }
+  .slide-footer { font-size: 10px; bottom: 8px; left: 8px; right: 8px; }
+  .nav-arrows { bottom: 100px; right: 10px; gap: 6px; }
+  .nav-arrow { width: 30px; height: 30px; }
+  .booth-price { font-size: 20px; }
+  .pkg-options { gap: 5px; margin-top: 8px; }
+  .bspec-val { font-size: 12px; }
+  .bspec-label { font-size: 9px; }
+  .statement-block p { font-size: 13.5px; }
+}
+
+/* Small mobile (up to 390px) */
+@media (max-width: 390px) {
+  .slide-left { padding: 48px 12px 12px; }
+  .slide-left h2 { font-size: 17px; }
+  .slide-left p.lead { font-size: 13px; }
+  .stats-row { grid-template-columns: 1fr; }
+  .pillars { grid-template-columns: 1fr; }
+  .bspec-grid { grid-template-columns: 1fr; }
+  .pkg-option { padding: 9px 10px; }
+}
+
+/* ─── Sidebar ─── */
+.sb {
+  background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
+  border-right: 1px solid var(--border);
+  padding: 22px 16px 18px;
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+}
+.sb-brand {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 0 6px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 14px;
+}
+.sb-brand-top { display: flex; align-items: center; gap: 12px; }
+.sb-logo { height: 56px; width: auto; max-width: 200px; object-fit: contain; }
+.sb-tagline {
+  font-size: 10.5px; font-weight: 400; color: var(--muted);
+  letter-spacing: .01em; line-height: 1.4; padding-left: 1px;
+}
+.sb-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; padding: 0 8px 12px;
+}
+.sb-list { flex: 1; overflow-y: auto; padding-right: 2px; }
+.sb-list::-webkit-scrollbar { width: 4px; }
+.sb-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sb-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  margin-bottom: 2px; transition: all .15s;
+  border: 1px solid transparent; user-select: none;
+}
+.sb-item:hover { background: var(--softer); }
+.sb-item.is-active {
+  background: linear-gradient(135deg, rgba(169,86,255,.08) 0%, rgba(55,102,254,.06) 100%);
+  border-color: rgba(124,93,255,.22);
+}
+.sb-item-num {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace; min-width: 22px;
+  padding-top: 2px; letter-spacing: .04em;
+}
+.sb-item.is-active .sb-item-num { color: var(--purple); }
+.sb-item-label { font-size: 13px; font-weight: 500; color: var(--ink-soft); line-height: 1.35; }
+.sb-item.is-active .sb-item-label { color: var(--ink); font-weight: 600; }
+.sb-foot {
+  padding-top: 14px; border-top: 1px solid var(--border-soft);
+  font-size: 11px; color: var(--muted);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sb-foot-hint { display: flex; align-items: center; gap: 6px; }
+.kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  background: #fff; border: 1px solid var(--border); border-radius: 4px;
+  color: var(--ink); box-shadow: 0 1px 0 rgba(15,23,42,.04);
+}
+.dot {
+  width: 8px; height: 8px; background: var(--green);
+  border-radius: 50%; display: inline-block;
+  box-shadow: 0 0 0 3px rgba(16,185,129,.18);
+  animation: pulse 2.4s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+  50%       { box-shadow: 0 0 0 7px rgba(16,185,129,.04); }
+}
+
+/* ─── Main ─── */
+.main { position: relative; height: 100vh; overflow: hidden; }
+.slides { position: relative; height: 100%; }
+
+/* ─── Slide base: split layout ─── */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: row;
+  opacity: 0; pointer-events: none;
+  transition: opacity .42s ease, transform .42s ease;
+  transform: translateY(12px);
+}
+.slide.is-active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+/* Left content panel */
+.slide-left {
+  flex: 0 0 58%;
+  padding: 52px 68px 100px;
+  display: flex; flex-direction: column; justify-content: center;
+  overflow-y: auto; position: relative;
+}
+
+/* Right image panel */
+.slide-right {
+  flex: 1;
+  position: relative; overflow: hidden;
+  background: var(--grad-img);
+  display: flex; align-items: flex-end; justify-content: center;
+  border-left: 1px solid var(--border-soft);
+}
+.slide-right::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at top, rgba(169,86,255,.14) 0%, transparent 62%);
+  pointer-events: none;
+}
+.slide-right img.char {
+  height: 82%; width: auto; object-fit: contain;
+  position: relative; z-index: 1;
+}
+
+/* Participant panel replaces char image on slide 05 */
+.participant-panel {
+  width: 100%; height: 100%;
+  padding: 36px 28px;
+  display: flex; flex-direction: column; justify-content: center; gap: 14px;
+  position: relative; z-index: 1;
+}
+
+/* ─── Slide chrome ─── */
+.slide-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.slide-left h2 {
+  font-size: clamp(28px, 3.6vw, 48px);
+  font-weight: 200; letter-spacing: -1.2px; line-height: 1.08;
+  margin-bottom: 18px; max-width: 22ch;
+}
+.slide-left p.lead {
+  font-size: 16px; font-weight: 300; color: var(--body);
+  max-width: 50ch; line-height: 1.55; margin-bottom: 24px;
+}
+.slide-left p.kicker {
+  font-size: 12.5px; font-weight: 400; color: var(--muted); margin-top: 20px;
+}
+
+/* ─── Slide footer ─── */
+.slide-footer {
+  position: absolute; left: 68px; right: 32px; bottom: 26px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--muted); pointer-events: none; z-index: 20;
+}
+.slide-counter { font-family: 'JetBrains Mono', monospace; letter-spacing: .14em; font-weight: 500; }
+.slide-progress { flex: 1; margin: 0 20px; height: 2px; background: var(--border-soft); border-radius: 2px; overflow: hidden; }
+.slide-progress-fill { height: 100%; background: var(--grad); border-radius: 2px; transition: width .42s ease; }
+.footer-brand { font-weight: 600; letter-spacing: .04em; color: var(--muted); }
+
+/* ─── Stats row (Slide 01) ─── */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.stat-card { padding: 18px 0 4px; border-top: 2px solid var(--ink); }
+.stat-num {
+  font-size: clamp(36px, 4.4vw, 58px); font-weight: 200;
+  letter-spacing: -2px; line-height: 1; color: var(--ink); margin-bottom: 10px;
+}
+.stat-num .grad { font-weight: 300; }
+.stat-label { font-size: 12.5px; line-height: 1.5; color: var(--body); font-weight: 400; }
+
+/* ─── Timeline (Slide 02) ─── */
+.timeline { display: flex; flex-direction: column; gap: 0; margin-top: 2px; }
+.tl-item {
+  display: grid; grid-template-columns: 96px 1fr; gap: 14px;
+  padding: 12px 0; border-bottom: 1px solid var(--border-soft);
+  align-items: start;
+}
+.tl-item:first-child { padding-top: 0; }
+.tl-date {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  font-weight: 600; color: var(--muted); letter-spacing: .04em;
+  line-height: 1.4; margin-top: 2px;
+}
+.tl-item.urgent .tl-date { color: var(--purple); }
+.tl-title { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
+.tl-item.urgent .tl-title { color: var(--ink); }
+.tl-body { font-size: 12px; color: var(--body); line-height: 1.5; }
+.tl-badge {
+  display: inline-block; padding: 1px 6px; margin-left: 6px;
+  background: rgba(169,86,255,.10); border: 1px solid rgba(124,93,255,.24);
+  border-radius: 3px; font-size: 9px; font-weight: 700; letter-spacing: .1em;
+  color: var(--purple); text-transform: uppercase; vertical-align: middle;
+}
+
+/* ─── Statement block (Slide 03) ─── */
+.statement-block {
+  padding: 20px 26px; background: var(--grad-soft);
+  border-left: 3px solid var(--purple); border-radius: 0 12px 12px 0;
+  margin-bottom: 22px;
+}
+.statement-block p {
+  font-size: 15.5px; font-weight: 300; color: var(--ink);
+  line-height: 1.65; font-style: italic; text-wrap: balance;
+}
+
+/* ─── Proof pillars (Slide 03) ─── */
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.pillar { padding: 16px 0 0; border-top: 1px solid var(--border); }
+.pillar-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 22px;
+  font-weight: 200; letter-spacing: -1px; color: var(--ink); margin-bottom: 4px; line-height: 1;
+}
+.pillar-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.3; }
+.pillar-body { font-size: 12px; color: var(--body); line-height: 1.55; }
+
+/* ─── Concept cards (Slide 04) ─── */
+.concept-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.concept-card {
+  padding: 14px 18px; background: var(--softer);
+  border: 1px solid var(--border-soft); border-radius: 12px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.concept-tag {
+  display: inline-block; padding: 3px 9px; background: var(--grad);
+  color: #fff; font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 700; letter-spacing: .14em;
+  border-radius: 4px; flex-shrink: 0; white-space: nowrap; margin-top: 2px;
+}
+.concept-title { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.concept-body { font-size: 12px; color: var(--body); line-height: 1.5; }
+
+/* ─── Participant cards (Slide 05) ─── */
+.participant-card {
+  padding: 16px 18px; background: rgba(255,255,255,.88);
+  border: 1px solid var(--border-soft); border-radius: 14px;
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; gap: 14px;
+}
+.participant-card.tbc {
+  border-color: rgba(124,93,255,.22);
+  background: linear-gradient(135deg, rgba(169,86,255,.06), rgba(55,102,254,.04));
+}
+.participant-photo {
+  width: 52px; height: 52px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,.9);
+  box-shadow: 0 2px 8px rgba(15,23,42,.10);
+}
+.participant-initials {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, #a956ff, #3766fe);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 600; color: white; flex-shrink: 0;
+}
+.participant-initials.tbc-init {
+  background: transparent;
+  border: 2px dashed rgba(124,93,255,.35);
+  color: var(--purple);
+  font-size: 16px;
+}
+.participant-role {
+  font-size: 10px; font-weight: 700; letter-spacing: .10em;
+  color: var(--purple); text-transform: uppercase; margin-bottom: 3px;
+}
+.participant-name { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.participant-note { font-size: 12px; color: var(--body); line-height: 1.4; }
+
+/* ─── Show grid (Slide 06) ─── */
+.show-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.show-card {
+  padding: 14px 16px; background: var(--softer);
+  border: 1px solid var(--border-soft); border-radius: 12px;
+}
+.show-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
+  font-weight: 700; letter-spacing: .14em; color: var(--purple);
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.show-title { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 5px; line-height: 1.3; }
+.show-body { font-size: 12px; color: var(--body); line-height: 1.55; }
+
+/* ─── Nav arrows ─── */
+.nav-arrows {
+  position: fixed; bottom: 26px; right: 26px;
+  display: flex; flex-direction: column; gap: 8px; z-index: 30;
+}
+.nav-arrow {
+  width: 36px; height: 36px; border-radius: 50%; background: #fff;
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .15s; box-shadow: 0 2px 8px rgba(15,23,42,.06);
+}
+.nav-arrow:hover { border-color: var(--purple); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(124,93,255,.22); }
+.nav-arrow svg { width: 13px; height: 13px; color: var(--ink); }
+.nav-arrow.is-disabled { opacity: 0.3; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sb">
+    <div class="sb-brand">
+      <div class="sb-brand-top">
+        <img src="assets/logo.png" alt="PurchasePlus" class="sb-logo">
+        <svg width="38" height="24" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" style="border-radius:3px;display:block;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.28));">
+          <rect width="38" height="24" fill="#B22234"/>
+          <rect y="1.846" width="38" height="1.846" fill="white"/>
+          <rect y="5.538" width="38" height="1.846" fill="white"/>
+          <rect y="9.231" width="38" height="1.846" fill="white"/>
+          <rect y="12.923" width="38" height="1.846" fill="white"/>
+          <rect y="16.615" width="38" height="1.846" fill="white"/>
+          <rect y="20.308" width="38" height="1.846" fill="white"/>
+          <rect width="15.2" height="12.923" fill="#3C3B6E"/>
+        </svg>
+      </div>
+      <div class="sb-tagline">HITEC 2026 · San Antonio, Texas</div>
+    </div>
+    <div class="sb-eyebrow grad">HITEC 2026</div>
+    <nav class="sb-list" id="sbList"></nav>
+    <button class="sb-toggle" id="sbToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="sb-overlay" id="sbOverlay"></div>
+    <div class="sb-foot">
+      <div class="sb-foot-hint">
+        <span class="kbd">↑</span><span class="kbd">↓</span>
+      </div>
+      <div><span class="dot"></span></div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="slides" id="slides">
+
+      <!-- 01 · Event Booth -->
+      <section class="slide is-active" data-title="Event Booth">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">01 / Event Booth</span></div>
+          <h2>Booth #3715. <span class="grad">San Antonio, Texas.</span></h2>
+          <p class="lead">PurchasePlus steps onto US soil for the first time. Henry B. Gonzalez Convention Center. June 15 to 18, 2026.</p>
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-num"><span class="grad">3715</span></div>
+              <div class="stat-label">Booth number. Enhanced Plus tier. Island booth configuration on the show floor.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">3 days</div>
+              <div class="stat-label">June 16, 17, 18 on the floor. Move-in Saturday June 15. Four days total in San Antonio.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num"><span class="grad">$10K</span></div>
+              <div class="stat-label">Booth fee. Furniture, carpet, floor covering, and signage are ordered separately via GES.</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right">
+          <img class="char" src="Images/slide1_hero.jpg" alt="" style="height:100%;width:100%;object-fit:cover;object-position:center top;">
+        </div>
+      </section>
+
+      <!-- 02 · Booth Design -->
+      <section class="slide" data-title="Booth Design">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">02 / Booth Design</span></div>
+          <h2>Three walls. <span class="grad">One statement.</span></h2>
+          <p class="lead">Sustainable Fabric Display, Booth D. 20 ft wide. Three graphic panels, open front facing the main aisle.</p>
+          <div class="booth-price"><span class="grad">$5,098.25</span> <span class="booth-price-note">/ booth package</span></div>
+          <div class="bspec-grid">
+            <div class="bspec">
+              <div class="bspec-label">Booth number</div>
+              <div class="bspec-val">#3715 Enhanced Plus</div>
+            </div>
+            <div class="bspec">
+              <div class="bspec-label">Width</div>
+              <div class="bspec-val">20 ft wide</div>
+            </div>
+            <div class="bspec">
+              <div class="bspec-label">Panels</div>
+              <div class="bspec-val">A, B, C (3 graphic panels)</div>
+            </div>
+            <div class="bspec">
+              <div class="bspec-label">Panel size</div>
+              <div class="bspec-val">77-5/16" w x 92-13/16" h</div>
+            </div>
+            <div class="bspec">
+              <div class="bspec-label">Artwork spec</div>
+              <div class="bspec-val">100dpi min, +1" bleed, PMS/CMYK</div>
+            </div>
+            <div class="bspec">
+              <div class="bspec-label">Submission deadline</div>
+              <div class="bspec-val">30 days before show</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right booth-img-stack">
+          <img src="Images/booth_mockup1.jpg" alt="Booth front view">
+          <img src="Images/booth_3d.jpg" alt="Booth 3D view">
+        </div>
+      </section>
+
+      <!-- 03 · Furnishings -->
+      <section class="slide" data-title="Furnishings">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">03 / Furnishings</span></div>
+          <h2>Furniture, carpet <span class="grad">and floor covering.</span></h2>
+          <p class="lead">GES best-pricing deadline: Wed 27 May. Three configurations below. Carpet and flooring ordered separately.</p>
+          <div class="pkg-options">
+
+            <div class="pkg-option">
+              <div class="pkg-tier essential">Essential</div>
+              <div class="pkg-items">
+                <div class="pkg-item">
+                  <div class="pkg-item-label">Seating area</div>
+                  <div class="pkg-item-name">Chair Value Package 1</div>
+                  <div class="pkg-item-price">$769.50</div>
+                </div>
+                <div class="pkg-plus">+</div>
+                <div class="pkg-item">
+                  <div class="pkg-item-label">Bar area</div>
+                  <div class="pkg-item-name">Bar Classic Package</div>
+                  <div class="pkg-item-price">$612.82</div>
+                </div>
+              </div>
+              <div class="pkg-total">Total est. <strong>$1,382</strong></div>
+            </div>
+
+            <div class="pkg-option">
+              <div class="pkg-tier comfortable">Comfortable</div>
+              <div class="pkg-items">
+                <div class="pkg-item">
+                  <div class="pkg-item-label">Seating area</div>
+                  <div class="pkg-item-name">Lounge Classic Package 1</div>
+                  <div class="pkg-item-price">$1,342.93</div>
+                </div>
+                <div class="pkg-plus">+</div>
+                <div class="pkg-item">
+                  <div class="pkg-item-label">Bar area</div>
+                  <div class="pkg-item-name">Bar Premium Package</div>
+                  <div class="pkg-item-price">$1,077.75</div>
+                </div>
+              </div>
+              <div class="pkg-total">Total est. <strong>$2,421</strong></div>
+            </div>
+
+            <div class="pkg-option">
+              <div class="pkg-tier premium">Premium</div>
+              <div class="pkg-items">
+                <div class="pkg-item">
+                  <div class="pkg-item-label">Seating area</div>
+                  <div class="pkg-item-name">Sofa Classic Package 4</div>
+                  <div class="pkg-item-price">$5,108.63</div>
+                </div>
+                <div class="pkg-plus">+</div>
+                <div class="pkg-item">
+                  <div class="pkg-item-label">Bar area</div>
+                  <div class="pkg-item-name">Bar Premium Package</div>
+                  <div class="pkg-item-price">$1,077.75</div>
+                </div>
+              </div>
+              <div class="pkg-total">Total est. <strong>$6,187</strong></div>
+            </div>
+
+          </div>
+        </div>
+        <div class="slide-right">
+          <img src="Images/checklist_screenshot.jpg" alt="GES Furnishings catalog" style="height:100%;width:100%;object-fit:contain;object-position:top;background:#f9f9f9;padding:16px;box-sizing:border-box;">
+        </div>
+      </section>
+
+      <!-- 04 · Event Plan -->
+      <section class="slide" data-title="Event Plan">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">04 / Event Plan</span></div>
+          <h2>What needs to happen <span class="grad">before show day.</span></h2>
+          <div class="checklist">
+            <div class="cl-item">
+              <div class="cl-check urgent"></div>
+              <div class="cl-body">
+                <div class="cl-top">
+                  <span class="cl-title">Submit Exhibitor Insurance COI</span>
+                  <span class="cl-date date-urgent">ASAP</span>
+                </div>
+                <div class="cl-desc">Required by HFTP before the show opens. Submit via the Exhibitor Hub tasks panel.</div>
+              </div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check urgent"></div>
+              <div class="cl-body">
+                <div class="cl-top">
+                  <span class="cl-title">Submit Island Booth Design Approval</span>
+                  <span class="cl-date date-urgent">Tue 19 May</span>
+                </div>
+                <div class="cl-desc">Required for island booth configuration. Submit through Exhibitor Hub. Include Saturday Move-In Request for June 15 setup.</div>
+              </div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check soon"></div>
+              <div class="cl-body">
+                <div class="cl-top">
+                  <span class="cl-title">GES best-pricing deadline</span>
+                  <span class="cl-date date-soon">Wed 27 May</span>
+                </div>
+                <div class="cl-desc">Order furniture, carpet, floor covering, and signage. Prices rise after this date. Contact GES: expresso.ges.com or (800) 801-7648.</div>
+              </div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check active"></div>
+              <div class="cl-body">
+                <div class="cl-top">
+                  <span class="cl-title">Confirm logo clearance with Malcolm</span>
+                  <span class="cl-date date-active">By 7 Jun</span>
+                </div>
+                <div class="cl-desc">Accor, IHG, Marriott, Qantas, Emirates, Novotel. Confirm which are cleared for HITEC print before artwork goes to production.</div>
+              </div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check active"></div>
+              <div class="cl-body">
+                <div class="cl-top">
+                  <span class="cl-title">Complete Exhibitor Hub profile</span>
+                  <span class="cl-date date-active">By 8 Jun</span>
+                </div>
+                <div class="cl-desc">Currently 10% complete. Add press releases (0/10), products (0/10), show specials (0/10), and 1 video. Complete profiles get 2 to 3x more attendee views.</div>
+              </div>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check"></div>
+              <div class="cl-body">
+                <div class="cl-top">
+                  <span class="cl-title">Move-in day</span>
+                  <span class="cl-date date-future">Mon 15 Jun</span>
+                </div>
+                <div class="cl-desc">Booth setup and final checks. Show opens the following morning.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right">
+          <img class="char" src="Images/eventplan_hero.jpg" alt="" style="height:100%;width:100%;object-fit:cover;object-position:center;">
+        </div>
+      </section>
+
+      <!-- 05 · The Statement -->
+      <section class="slide" data-title="The Statement">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">05 / The Statement</span></div>
+          <h2>Built by people, <span class="grad">operated by hospitality AI agents.</span></h2>
+          <div class="statement-block">
+            <p>We are officially landing on U.S.-based soil. Built and kept by PurchasePlus family members, operated by the most advanced high-tech hospitality AI agents. Prepare to save costs, grow revenue, and improve service in every department of your hospitality business.</p>
+          </div>
+          <div class="pillars">
+            <div class="pillar">
+              <div class="pillar-num"><span class="grad">99%+</span></div>
+              <div class="pillar-title">Invoice accuracy</div>
+              <div class="pillar-body">90% straight-through processing. No rekeying. 1 FTE saved per 2,000 monthly invoices.</div>
+            </div>
+            <div class="pillar">
+              <div class="pillar-num"><span class="grad">75%</span></div>
+              <div class="pillar-title">Cost reduction</div>
+              <div class="pillar-body">Invoice processing costs cut by three quarters. Finance has control. Operations has speed.</div>
+            </div>
+            <div class="pillar">
+              <div class="pillar-num"><span class="grad">40M+</span></div>
+              <div class="pillar-title">Invoices processed</div>
+              <div class="pillar-body">Since 1999. Accor, IHG, Marriott, Qantas, Emirates. 30,000 suppliers on the platform.</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right">
+          <img class="char" src="Images/statement_hero.jpg" alt="" style="height:100%;width:100%;object-fit:cover;object-position:center top;">
+        </div>
+      </section>
+
+      <!-- 06 · The Idea -->
+      <section class="slide" data-title="The Idea">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">06 / The Idea</span></div>
+          <h2>Texas ambition. <span class="grad">Rocket trajectory.</span></h2>
+          <p class="lead">Not a polite SaaS demo box. A statement. Cowboy wild west energy crossed with Houston space-age precision. Confident, frontier, fast, big.</p>
+          <div class="concept-grid">
+            <div class="concept-card">
+              <span class="concept-tag">LED Wall</span>
+              <div>
+                <div class="concept-title">The Opening Statement</div>
+                <div class="concept-body">Long-form positioning copy on the LED wall in the brand gradient. Big. Impossible to walk past. The first thing every attendee sees from the aisle.</div>
+              </div>
+            </div>
+            <div class="concept-card">
+              <span class="concept-tag">Logo Wall</span>
+              <div>
+                <div class="concept-title">The Proof</div>
+                <div class="concept-body">Accor. IHG. Marriott. Qantas. Emirates. Printed clean and large. When a Texas hotel GM sees Marriott on the wall, the conversation changes.</div>
+              </div>
+            </div>
+            <div class="concept-card">
+              <span class="concept-tag">Demo Station</span>
+              <div>
+                <div class="concept-title">The Product Story</div>
+                <div class="concept-body">PurchasePlus live on screen. F&amp;B GP calculator, invoice processing before and after, live gross profit view across every property.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right">
+          <img class="char" src="Booth%20Artwork/04_AIAgentsTeam/04_AIAgentsTeam_nano_banana_2.jpg" alt="" style="height:100%;width:100%;object-fit:cover;object-position:center top;">
+        </div>
+      </section>
+
+      <!-- 07 · The Participants -->
+      <section class="slide" data-title="The Participants">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">07 / The Participants</span></div>
+          <h2>Three people <span class="grad">on the floor.</span></h2>
+          <p class="lead">Malcolm owns senior buyer conversations. Akila drives the booth concept, demo, and lead capture. Daniel brings local US market knowledge and a face to the region.</p>
+          <p class="kicker">Strattam Capital investors will be on site at HITEC and available for introductions. Malcolm, Akila, and Daniel are the booth team.</p>
+        </div>
+        <div class="slide-right">
+          <div class="participant-panel">
+            <div class="participant-card">
+              <img src="../../PurchasePlus%20GTM%20Strategy/assets/agents/akila.png" alt="Akila Lohan" class="participant-photo">
+              <div>
+                <div class="participant-role">Head of Marketing, Global</div>
+                <div class="participant-name">Akila Lohan</div>
+                <div class="participant-note">Booth concept, demo, lead capture. Attendance pending final confirmation with Malcolm.</div>
+              </div>
+            </div>
+            <div class="participant-card">
+              <div class="participant-initials">MJ</div>
+              <div>
+                <div class="participant-role">CEO</div>
+                <div class="participant-name">Malcolm Jull</div>
+                <div class="participant-note">Senior buyer conversations and Strattam contacts on site. Confirmed.</div>
+              </div>
+            </div>
+            <div class="participant-card tbc">
+              <div class="participant-initials tbc-init">D</div>
+              <div>
+                <div class="participant-role">US Sales Representative</div>
+                <div class="participant-name">Daniel</div>
+                <div class="participant-note">New US hire. Local market knowledge and a face to the region. Joining soon.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08 · Show Experience -->
+      <section class="slide" data-title="Show Experience">
+        <div class="slide-left">
+          <div class="slide-eyebrow"><span class="grad">08 / Show Experience</span></div>
+          <h2>Three days. <span class="grad">One agenda.</span></h2>
+          <p class="lead">Every badge scan routes into the follow-up pipeline. Every conversation has a job. No lead left in a spreadsheet after the show closes.</p>
+          <div class="show-grid">
+            <div class="show-card">
+              <div class="show-tag">Lead Capture</div>
+              <div class="show-title">Badge scanner to HubSpot</div>
+              <div class="show-body">Every scan connects to HubSpot in real time. Personalised follow-up within 2 hours of every interaction. No manual export.</div>
+            </div>
+            <div class="show-card">
+              <div class="show-tag">Conversations</div>
+              <div class="show-title">15+ qualified meetings</div>
+              <div class="show-body">Target: 15 or more qualified conversations booked at or directly from the show. Agree the definition of qualified with Malcolm before show day.</div>
+            </div>
+            <div class="show-card">
+              <div class="show-tag">Design Partner</div>
+              <div class="show-title">One ICP commitment</div>
+              <div class="show-body">One case-study or design-partner commitment closed at the event. That reference changes every US conversation that follows.</div>
+            </div>
+            <div class="show-card">
+              <div class="show-tag">VIP Buyers</div>
+              <div class="show-title">Complimentary buyer pass</div>
+              <div class="show-body">Invite prospects with the HITEC VIP Buyer Pass link. Valid for qualified hospitality buyers (hotels, resorts, casinos). Use in outreach now. Pre-show attendee list is available: password hitecSA26.</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-right">
+          <img class="char" src="Images/showexperience_hero.jpg" alt="" style="height:100%;width:100%;object-fit:cover;object-position:center top;">
+        </div>
+      </section>
+
+    </div>
+
+    <div class="slide-footer">
+      <span class="slide-counter mono" id="counter">01 / 06</span>
+      <div class="slide-progress"><div class="slide-progress-fill" id="progress" style="width:16.67%"></div></div>
+      <span class="footer-brand">PurchasePlus</span>
+    </div>
+
+    <div class="nav-arrows">
+      <button class="nav-arrow is-disabled" id="prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+      </button>
+      <button class="nav-arrow" id="next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+    </div>
+  </main>
+</div>
+
+<script>
+(function() {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const sbList = document.getElementById('sbList');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const total = slides.length;
+  let current = 0;
+
+  slides.forEach(function(s, i) {
+    const item = document.createElement('div');
+    item.className = 'sb-item' + (i === 0 ? ' is-active' : '');
+    item.dataset.idx = i;
+    item.innerHTML =
+      '<div class="sb-item-num">' + String(i + 1).padStart(2, '0') + '</div>' +
+      '<div class="sb-item-label">' + s.dataset.title + '</div>';
+    item.addEventListener('click', function() { go(i); });
+    sbList.appendChild(item);
+  });
+
+  function go(i) {
+    if (i < 0 || i >= total || i === current) return;
+    slides[current].classList.remove('is-active');
+    slides[i].classList.add('is-active');
+    sbList.children[current].classList.remove('is-active');
+    sbList.children[i].classList.add('is-active');
+    current = i;
+    updateChrome();
+  }
+
+  function updateChrome() {
+    const num = String(current + 1).padStart(2, '0');
+    const tot = String(total).padStart(2, '0');
+    counter.textContent = num + ' / ' + tot;
+    progress.style.width = (((current + 1) / total) * 100) + '%';
+    prevBtn.classList.toggle('is-disabled', current === 0);
+    nextBtn.classList.toggle('is-disabled', current === total - 1);
+  }
+
+  prevBtn.addEventListener('click', function() { go(current - 1); });
+  nextBtn.addEventListener('click', function() { go(current + 1); });
+
+  document.addEventListener('keydown', function(e) {
+    if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) {
+      e.preventDefault(); go(current + 1);
+    } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+      e.preventDefault(); go(current - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault(); go(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); go(total - 1);
+    }
+  });
+
+  updateChrome();
+
+  // ── Mobile sidebar ──
+  const sb = document.querySelector('.sb');
+  const toggle = document.getElementById('sbToggle');
+  const overlay = document.getElementById('sbOverlay');
+  function closeSb() { sb.classList.remove('is-open'); overlay.classList.remove('is-open'); }
+  if (toggle) {
+    toggle.addEventListener('click', function() {
+      const open = sb.classList.toggle('is-open');
+      overlay.classList.toggle('is-open', open);
+    });
+    overlay.addEventListener('click', closeSb);
+    sbList.addEventListener('click', closeSb);
+  }
+
+  // ── Touch swipe ──
+  let touchX = null;
+  document.addEventListener('touchstart', function(e) { touchX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 48) { dx < 0 ? go(current + 1) : go(current - 1); }
+  }, { passive: true });
+})();
+</script>
+
+<audio id="bgAudio" src="backup_plan.mp3" loop preload="auto"></audio>
+
+<div class="mp" id="musicPlayer">
+  <div class="mp-controls">
+    <button class="mp-btn mp-play" id="mpPlay" aria-label="Play">
+      <svg id="mpIconPlay" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="mpIconPause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <div class="mp-progress-wrap">
+      <span class="mp-time" id="mpCurrent">0:00</span>
+      <div class="mp-track" id="mpTrack">
+        <div class="mp-fill" id="mpFill"></div>
+        <div class="mp-thumb" id="mpThumb"></div>
+      </div>
+      <span class="mp-time" id="mpTotal">0:00</span>
+    </div>
+    <div class="mp-vol-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:var(--mp-muted);flex-shrink:0"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      <input class="mp-vol" id="mpVol" type="range" min="0" max="1" step="0.01" value="0.1">
+    </div>
+  </div>
+</div>
+
+<style>
+:root { --mp-muted: rgba(255,255,255,.55); }
+.mp {
+  position: fixed; bottom: 20px; right: 20px; z-index: 200;
+  background: rgba(17,10,35,.88);
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  border: 1px solid rgba(169,86,255,.28);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 0 1px rgba(169,86,255,.1);
+  color: #fff;
+}
+.mp-controls { display: flex; align-items: center; gap: 10px; }
+.mp-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; flex-shrink: 0;
+  background: linear-gradient(135deg,#a956ff,#3766fe);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  transition: transform .15s, box-shadow .15s;
+}
+.mp-btn:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(169,86,255,.5); }
+.mp-progress-wrap { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.mp-time { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--mp-muted); white-space: nowrap; flex-shrink: 0; }
+.mp-track {
+  flex: 1; height: 4px; background: rgba(255,255,255,.18); border-radius: 4px;
+  position: relative; cursor: pointer; min-width: 0;
+}
+.mp-fill { height: 100%; background: linear-gradient(90deg,#a956ff,#3766fe); border-radius: 4px; width: 0%; pointer-events: none; }
+.mp-thumb {
+  position: absolute; top: 50%; right: auto; transform: translate(-50%,-50%);
+  width: 12px; height: 12px; background: #fff; border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4); left: 0%;
+  opacity: 0; transition: opacity .15s; pointer-events: none;
+}
+.mp-track:hover .mp-thumb { opacity: 1; }
+.mp-vol-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.mp-vol {
+  -webkit-appearance: none; appearance: none;
+  width: 70px; height: 4px; border-radius: 4px; outline: none; cursor: pointer;
+  background: linear-gradient(to right, #a956ff 80%, rgba(255,255,255,.2) 80%);
+}
+.mp-vol::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px;
+  border-radius: 50%; background: #fff; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+.mp-vol::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%; background: #fff;
+  cursor: pointer; border: none; box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+/* Playing pulse on the note icon */
+.mp.is-playing .mp-note { animation: mpPulse 2s ease infinite; }
+@keyframes mpPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(169,86,255,.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(169,86,255,0); }
+}
+/* Responsive */
+@media (max-width: 600px) {
+  .mp { width: calc(100vw - 24px); right: 12px; bottom: 12px; padding: 10px 12px; gap: 8px; }
+  .mp-vol-wrap { display: none; }
+  .mp-vol { width: 60px; }
+}
+</style>
+<script>
+(function(){
+  const audio = document.getElementById('bgAudio');
+  const playBtn = document.getElementById('mpPlay');
+  const iconPlay = document.getElementById('mpIconPlay');
+  const iconPause = document.getElementById('mpIconPause');
+  const fill = document.getElementById('mpFill');
+  const thumb = document.getElementById('mpThumb');
+  const track = document.getElementById('mpTrack');
+  const current = document.getElementById('mpCurrent');
+  const total = document.getElementById('mpTotal');
+  const vol = document.getElementById('mpVol');
+  const player = document.getElementById('musicPlayer');
+
+  function fmt(s) {
+    s = Math.floor(s || 0);
+    return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+  }
+  function setPct(pct) {
+    fill.style.width = pct + '%';
+    thumb.style.left = pct + '%';
+  }
+  function updateVol() {
+    const pct = vol.value * 100;
+    vol.style.background = `linear-gradient(to right, #a956ff ${pct}%, rgba(255,255,255,.2) ${pct}%)`;
+  }
+
+  audio.volume = parseFloat(vol.value);
+  updateVol();
+
+  function setPlaying(on) {
+    iconPlay.style.display = on ? 'none' : '';
+    iconPause.style.display = on ? '' : 'none';
+    on ? player.classList.add('is-playing') : player.classList.remove('is-playing');
+  }
+
+  audio.addEventListener('loadedmetadata', function(){ total.textContent = fmt(audio.duration); });
+  audio.addEventListener('timeupdate', function(){
+    current.textContent = fmt(audio.currentTime);
+    if (audio.duration) setPct((audio.currentTime / audio.duration) * 100);
+  });
+
+  // Autoplay: try immediately, fall back to first user interaction
+  function tryPlay() {
+    audio.play().then(function(){ setPlaying(true); }).catch(function(){});
+  }
+  tryPlay();
+  function onFirstInteraction() {
+    if (audio.paused) tryPlay();
+    document.removeEventListener('click', onFirstInteraction);
+    document.removeEventListener('keydown', onFirstInteraction);
+    document.removeEventListener('touchstart', onFirstInteraction);
+  }
+  document.addEventListener('click', onFirstInteraction);
+  document.addEventListener('keydown', onFirstInteraction);
+  document.addEventListener('touchstart', onFirstInteraction, { passive: true });
+
+  playBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (audio.paused) {
+      audio.play().then(function(){ setPlaying(true); });
+    } else {
+      audio.pause();
+      setPlaying(false);
+    }
+  });
+
+  // Seek on track click/drag
+  let seeking = false;
+  function seek(e) {
+    const rect = track.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    if (audio.duration) { audio.currentTime = x * audio.duration; setPct(x * 100); }
+  }
+  track.addEventListener('mousedown', function(e){ seeking = true; seek(e); });
+  document.addEventListener('mousemove', function(e){ if (seeking) seek(e); });
+  document.addEventListener('mouseup', function(){ seeking = false; });
+  track.addEventListener('touchstart', function(e){ seek(e.touches[0]); }, { passive: true });
+  track.addEventListener('touchmove', function(e){ seek(e.touches[0]); }, { passive: true });
+
+  vol.addEventListener('input', function(){ audio.volume = parseFloat(vol.value); updateVol(); });
+})();
+</script>
+</body>
+</html>
