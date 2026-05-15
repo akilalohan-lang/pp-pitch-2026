@@ -1040,7 +1040,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 })();
 </script>
 
-<audio id="bgAudio" src="backup_plan.mp3" loop preload="auto"></audio>
+<audio id="bgAudio" src="backup_plan.mp3" loop preload="auto" muted autoplay></audio>
 
 <div class="mp" id="musicPlayer">
   <div class="mp-controls">
@@ -1170,13 +1170,19 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     if (audio.duration) setPct((audio.currentTime / audio.duration) * 100);
   });
 
-  // Autoplay: try immediately, fall back to first user interaction
-  function tryPlay() {
-    audio.play().then(function(){ setPlaying(true); }).catch(function(){});
-  }
-  tryPlay();
+  // Autoplay strategy: muted autoplay (allowed by all browsers), then unmute immediately
+  audio.addEventListener('playing', function onUnmute() {
+    audio.muted = false;
+    audio.volume = parseFloat(vol.value);
+    setPlaying(true);
+    audio.removeEventListener('playing', onUnmute);
+  });
+
+  // Fallback: if muted autoplay also blocked, unmute on first interaction
   function onFirstInteraction() {
-    if (audio.paused) tryPlay();
+    audio.muted = false;
+    audio.volume = parseFloat(vol.value);
+    if (audio.paused) audio.play().then(function(){ setPlaying(true); }).catch(function(){});
     document.removeEventListener('click', onFirstInteraction);
     document.removeEventListener('keydown', onFirstInteraction);
     document.removeEventListener('touchstart', onFirstInteraction);
