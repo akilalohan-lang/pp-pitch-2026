@@ -1040,7 +1040,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 })();
 </script>
 
-<audio id="bgAudio" src="backup_plan.mp3" loop preload="auto" muted autoplay></audio>
+<audio id="bgAudio" src="backup_plan.mp3" loop preload="auto"></audio>
 
 <div class="mp" id="musicPlayer">
   <div class="mp-controls">
@@ -1171,26 +1171,44 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     if (audio.duration) setPct((audio.currentTime / audio.duration) * 100);
   });
 
-  // Autoplay strategy: muted autoplay (allowed by all browsers), then unmute immediately
-  audio.addEventListener('playing', function onUnmute() {
-    audio.muted = false;
-    audio.volume = parseFloat(vol.value);
-    setPlaying(true);
-    audio.removeEventListener('playing', onUnmute);
-  });
+  var TARGET_VOL = parseFloat(vol.value);
+  var started = false;
 
-  // Fallback: if muted autoplay also blocked, unmute on first interaction
-  function onFirstInteraction() {
-    audio.muted = false;
-    audio.volume = parseFloat(vol.value);
-    if (audio.paused) audio.play().then(function(){ setPlaying(true); }).catch(function(){});
-    document.removeEventListener('click', onFirstInteraction);
-    document.removeEventListener('keydown', onFirstInteraction);
-    document.removeEventListener('touchstart', onFirstInteraction);
+  function startAudio() {
+    if (started) return;
+    // Play muted first — browsers always allow this
+    audio.muted = true;
+    audio.play().then(function() {
+      // Successfully playing muted: now unmute at target volume
+      audio.muted = false;
+      audio.volume = TARGET_VOL;
+      updateVol();
+      setPlaying(true);
+      started = true;
+    }).catch(function() {
+      // Muted play also blocked (very rare) — wait for first touch/click
+    });
   }
-  document.addEventListener('click', onFirstInteraction);
-  document.addEventListener('keydown', onFirstInteraction);
-  document.addEventListener('touchstart', onFirstInteraction, { passive: true });
+
+  // Try immediately on load
+  startAudio();
+
+  // Also try on first interaction as fallback (covers strict browser policies)
+  function onFirstInteraction() {
+    startAudio();
+    if (!started) {
+      // Force unmuted play on explicit gesture
+      audio.muted = false;
+      audio.volume = TARGET_VOL;
+      audio.play().then(function(){ setPlaying(true); started = true; }).catch(function(){});
+    }
+    document.removeEventListener('click', onFirstInteraction, true);
+    document.removeEventListener('keydown', onFirstInteraction, true);
+    document.removeEventListener('touchstart', onFirstInteraction, true);
+  }
+  document.addEventListener('click', onFirstInteraction, true);
+  document.addEventListener('keydown', onFirstInteraction, true);
+  document.addEventListener('touchstart', onFirstInteraction, { passive: true, capture: true });
 
   playBtn.addEventListener('click', function(e){
     e.stopPropagation();
