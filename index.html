@@ -404,6 +404,20 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 .hat-rule-num { font-size:38px; font-weight:200; letter-spacing:-2px; line-height:1; min-width:52px; }
 .hat-rule-text { font-size:15px; color:var(--body); line-height:1.5; }
 
+/* Claim the hat — big CTA button */
+.hat-claim-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin: 18px 0 14px;
+  background: var(--grad); color: #fff;
+  font-size: 17px; font-weight: 700; letter-spacing: .01em;
+  padding: 14px 28px; border-radius: 30px; border: none; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(124,93,255,.35); white-space: nowrap;
+  transition: transform .15s, box-shadow .15s;
+}
+.hat-claim-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,93,255,.5); }
+@media (max-width: 600px) { .hat-claim-btn { font-size: 15px; padding: 12px 22px; } }
+@media (max-width: 420px) { .hat-claim-btn { font-size: 14px; padding: 10px 18px; } }
+
 /* Hat lightbox — carousel */
 .hat-lightbox {
   display:none; position:fixed; inset:0; z-index:500;
@@ -425,10 +439,11 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 }
 .hat-slide {
   position:absolute; inset:0;
-  background:url('Images/hat.jpg') no-repeat;
-  background-size:200% auto;
   opacity:0; transition:opacity .35s ease;
+  display:flex; align-items:center; justify-content:center;
+  background:#0a0a0f;
 }
+.hat-slide img { max-width:100%; max-height:100%; object-fit:contain; }
 .hat-slide.is-active { opacity:1; }
 .hat-arrow {
   position:absolute; top:50%; transform:translateY(-50%);
@@ -500,9 +515,10 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 }
 
 /* ═══════════════════════════════════════════════════════
-   TABLET + MOBILE: completely different layout
+   TABLET + MOBILE: scroll-snap layout
    - Sidebar becomes off-canvas drawer
-   - Slide flips to column: image header on TOP, content scrolls below
+   - Each image = its own full-screen snap section
+   - Each content panel = its own full-screen snap section
    ═══════════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
 
@@ -518,144 +534,179 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   .sb.is-open { transform: translateX(0); }
   .sb-toggle { display: flex; }
 
-  /* ══ SCROLL LAYOUT: slides become a continuous scrollable page ══ */
-  .main { overflow-y: auto; height: 100dvh; -webkit-overflow-scrolling: touch; }
-  .slides { position: static; height: auto; display: flex; flex-direction: column; }
+  /* ══ SCROLL-SNAP: each section = its own full-screen page ══ */
+  .main {
+    overflow-y: scroll; height: 100dvh;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .slides { position: static; height: auto; display: block; }
 
   .slide {
-    position: static !important;
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto !important;
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    min-height: 0;
-    border-bottom: 2px solid var(--border-soft);
-    scroll-margin-top: 0;
+    position: static !important; opacity: 1 !important;
+    transform: none !important; pointer-events: auto !important;
+    display: flex; flex-direction: column; height: auto;
   }
 
-  /* Image section — full width, natural height, contained */
+  /* Image section — full-screen snap point */
   .slide-right {
-    order: -1;
-    flex: none;
-    width: 100%;
-    min-height: 280px;
-    max-height: 60dvh;
-    border-left: none;
-    border-bottom: 1px solid var(--border-soft);
-    overflow: hidden;
+    order: -1; flex: none; width: 100%; height: 100dvh;
+    scroll-snap-align: start; border-left: none;
+    overflow: hidden; display: flex;
+    flex-direction: column; align-items: stretch;
   }
-  .slide-right img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
-  .slide-right img.char { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+  .slide-right > img {
+    width: 100%; flex: 1; min-height: 0;
+    object-fit: contain; object-position: center; display: block;
+  }
+  .slide-right > img.char { object-fit: cover; object-position: center top; }
 
-  /* Content panel — natural height, good padding */
+  /* Content section — full-screen snap point */
   .slide-left {
-    flex: none;
-    width: 100%;
-    height: auto;
-    padding: 28px 32px 44px;
-    justify-content: flex-start;
-    overflow: visible;
+    flex: none; width: 100%; height: 100dvh;
+    scroll-snap-align: start;
+    padding: 56px 26px 88px; box-sizing: border-box;
+    overflow: hidden; justify-content: flex-start;
   }
-  .slide-left h2 { font-size: clamp(26px, 4vw, 40px); letter-spacing: -.4px; margin-bottom: 14px; }
-  .slide-left p.lead { font-size: 16px; margin-bottom: 18px; }
-  .slide-eyebrow { margin-bottom: 12px; }
+  .slide-left h2 { font-size: clamp(22px, 4vw, 38px); letter-spacing: -.4px; margin-bottom: 12px; }
+  .slide-left p.lead { font-size: clamp(14px, 2vw, 16px); margin-bottom: 14px; }
+  .slide-left p.kicker { font-size: 12px; margin-top: 10px; }
+  .slide-eyebrow { margin-bottom: 10px; }
 
-  /* ── Component adjustments ── */
+  /* Hat panel: it IS the slide-right so already gets 100dvh */
+  .hat-zoom-panel { height: 100dvh !important; min-height: unset; max-height: unset; }
+
+  /* Participant panel: stretch to fill the slide-right */
+  .slide-right .participant-panel {
+    flex: 1; min-height: 0; width: 100%;
+    overflow: hidden; padding: 56px 20px 80px;
+    box-sizing: border-box;
+  }
+
+  /* Component size reductions */
   .stats-row { grid-template-columns: repeat(3,1fr); gap: 10px; }
-  .stat-num { font-size: 26px; }
-  .stat-card { padding: 14px 0 6px; }
+  .stat-num { font-size: 24px; }
+  .stat-label { font-size: 12px; }
+  .stat-card { padding: 12px 0 4px; }
   .pillars { grid-template-columns: repeat(3,1fr); gap: 10px; }
-  .pillar-num { font-size: 26px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .booth-price { font-size: 24px; }
-  .pkg-options { gap: 10px; margin-top: 14px; }
-  .concept-grid { gap: 10px; }
-  .concept-card, .show-card { padding: 14px; }
-  .show-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .participant-panel { padding: 20px; gap: 12px; min-height: 280px; }
-  .participant-photo, .participant-initials { width: 50px; height: 50px; }
-  .participant-initials { font-size: 18px; }
-  .statement-block { padding: 16px 20px; }
-  .statement-block p { font-size: 16px; }
-  .hat-rules { gap: 16px; margin-top: 10px; }
-  .hat-rule-num { font-size: 38px; min-width: 50px; }
-  .hat-rule-text { font-size: 15px; }
-  .hat-zoom-panel { min-height: 280px; max-height: 60dvh; cursor: zoom-in; }
-
-  /* Footer: sticky to bottom of viewport */
-  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; position: fixed; }
-  .nav-arrows { bottom: 12px; right: 14px; bottom: 50px; }
-}
-
-/* ── Tablet portrait (769–900px): tighten image strip ── */
-@media (max-width: 900px) {
-  .slide-right { flex: 0 0 32dvh; }
-  .slide-left { padding: 18px 26px 76px; }
-  .slide-left h2 { font-size: clamp(20px, 3.2vw, 30px); margin-bottom: 10px; }
-  .slide-left p.lead { font-size: 14px; margin-bottom: 12px; }
-  .stat-num { font-size: 21px; }
-  .stat-label { font-size: 11.5px; }
-  .pillar-num { font-size: 21px; }
+  .pillar-num { font-size: 24px; }
   .pillar-title { font-size: 12px; }
   .pillar-body { font-size: 12px; }
-  .bspec-val { font-size: 13px; }
-  .booth-price { font-size: 19px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .bspec { padding: 10px 12px; }
+  .booth-price { font-size: 22px; }
+  .pkg-options { gap: 8px; margin-top: 10px; }
+  .pkg-option { padding: 10px 12px; }
+  .concept-grid { gap: 8px; }
+  .concept-card { padding: 12px 14px; }
+  .concept-title { font-size: 13px; }
+  .concept-body { font-size: 12px; }
+  .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .show-card { padding: 12px 14px; }
+  .show-title { font-size: 12.5px; }
+  .show-body { font-size: 12px; }
+  .participant-card { padding: 12px 14px; gap: 12px; }
+  .participant-photo, .participant-initials { width: 46px; height: 46px; }
+  .participant-initials { font-size: 16px; }
+  .participant-name { font-size: 14px; }
+  .participant-note { font-size: 12px; }
+  .statement-block { padding: 14px 18px; margin-bottom: 14px; }
+  .statement-block p { font-size: 14px; }
+  .hat-rules { gap: 12px; margin: 12px 0 10px; }
+  .hat-rule-num { font-size: 34px; min-width: 46px; }
+  .hat-rule-text { font-size: 14px; }
+  .qualify-grid { gap: 8px; margin: 12px 0; }
+  .qualify-card { padding: 12px; }
+  .qualify-title { font-size: 13px; }
+  .qualify-body { font-size: 11.5px; }
+  .scan-steps { margin-top: 12px; }
+  .scan-step { padding: 10px 0; }
+  .scan-num { font-size: 18px; }
+  .scan-title { font-size: 13px; }
+  .scan-body { font-size: 12px; }
+  .claim-cards { margin-top: 12px; }
+  .claim-card { padding: 10px 0; }
+  .claim-title { font-size: 13px; }
+  .claim-body { font-size: 12px; }
+  .cl-item { padding: 8px 0; }
+  .cl-title { font-size: 13px; }
+  .cl-desc { font-size: 11.5px; }
+  .tl-item { padding: 10px 0; gap: 12px; }
+  .tl-title { font-size: 13px; }
+  .tl-body { font-size: 12px; }
+
+  /* Footer: fixed at bottom of viewport */
+  .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; position: fixed; }
+  .nav-arrows { bottom: 50px; right: 14px; }
+}
+
+/* ── Small tablet (769–900px): tighten fonts ── */
+@media (max-width: 900px) {
+  .slide-left { padding: 48px 22px 80px; }
+  .slide-left h2 { font-size: clamp(20px, 3.5vw, 30px); margin-bottom: 10px; }
+  .slide-left p.lead { font-size: clamp(13px, 1.8vw, 15px); }
+  .stat-num { font-size: 20px; }
+  .stat-label { font-size: 11px; }
+  .pillar-num { font-size: 20px; }
+  .bspec-val { font-size: 12px; }
+  .booth-price { font-size: 18px; }
   .pkg-items { gap: 4px; }
 }
 
-/* ── Mobile (≤600px): single-column everything ── */
+/* ── Mobile (≤600px) ── */
 @media (max-width: 600px) {
-  .slide-right { flex: 0 0 26dvh; }
-  .slide-left { padding: 16px 18px 72px; }
-  .slide-left h2 { font-size: clamp(20px, 5.5vw, 26px); letter-spacing: -.2px; margin-bottom: 8px; }
-  .slide-left p.lead { font-size: 13.5px; margin-bottom: 10px; }
-
-  /* Collapse all grids to 1 col or 2-col max */
+  .slide-left { padding: 44px 18px 76px; }
+  .slide-left h2 { font-size: clamp(18px, 5vw, 26px); letter-spacing: -.2px; margin-bottom: 8px; }
+  .slide-left p.lead { font-size: clamp(12.5px, 3.5vw, 15px); margin-bottom: 10px; }
+  .slide-left p.kicker { font-size: 11.5px; }
   .stats-row { grid-template-columns: 1fr 1fr; gap: 5px; }
   .stat-num { font-size: 18px; }
   .stat-card { padding: 10px 0 3px; }
   .pillars { grid-template-columns: 1fr; gap: 0; }
-  .pillar { border-top: 1px solid var(--border-soft); padding: 10px 0 2px; }
-  .pillar-num { font-size: 20px; margin-bottom: 2px; }
-  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+  .pillar { border-top: 1px solid var(--border-soft); padding: 8px 0 2px; }
+  .pillar-num { font-size: 18px; margin-bottom: 2px; }
+  .pillar-body { font-size: 11px; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
   .bspec { padding: 8px 10px; }
-  .bspec-val { font-size: 12px; }
+  .bspec-val { font-size: 11px; }
   .bspec-label { font-size: 9px; }
-  .booth-price { font-size: 18px; }
+  .booth-price { font-size: 16px; }
   .pkg-items { flex-direction: column; gap: 3px; }
   .pkg-plus { display: none; }
   .pkg-option { padding: 8px 10px; }
-  .show-grid { grid-template-columns: 1fr; gap: 6px; }
-  .concept-grid { gap: 6px; }
+  .show-grid { grid-template-columns: 1fr; gap: 5px; }
+  .show-card { padding: 10px 12px; }
+  .concept-grid { gap: 5px; }
   .concept-card { padding: 10px 12px; gap: 8px; }
-  .participant-panel { padding: 10px 14px; gap: 6px; }
+  .slide-right .participant-panel { padding: 44px 14px 70px; gap: 6px; }
   .participant-card { padding: 9px 12px; gap: 10px; }
-  .participant-photo, .participant-initials { width: 36px; height: 36px; }
+  .participant-photo, .participant-initials { width: 34px; height: 34px; }
+  .participant-initials { font-size: 14px; }
   .participant-name { font-size: 12px; }
   .participant-note { font-size: 11px; }
-  .statement-block { padding: 12px 14px; }
-  .statement-block p { font-size: 13px; }
+  .statement-block { padding: 10px 12px; }
+  .statement-block p { font-size: 12.5px; }
   .hat-rule-num { font-size: 28px; min-width: 38px; }
-  .hat-rule-text { font-size: 13px; }
+  .hat-rule-text { font-size: 12.5px; }
   .qualify-card { padding: 10px 12px; }
-  .qualify-title { font-size: 13px; }
-  .qualify-body { font-size: 11.5px; }
-  .cl-item { padding: 7px 0; }
+  .qualify-title { font-size: 12px; }
+  .qualify-body { font-size: 11px; }
+  .cl-item { padding: 6px 0; }
   .cl-title { font-size: 12px; }
   .cl-desc { font-size: 10.5px; }
+  .scan-num { font-size: 16px; }
+  .claim-icon { width: 30px; height: 30px; border-radius: 8px; }
   .slide-footer { left: 10px; right: 10px; bottom: 8px; font-size: 10px; }
-  .nav-arrows { bottom: 10px; right: 10px; gap: 5px; }
+  .nav-arrows { bottom: 44px; right: 10px; gap: 5px; }
   .nav-arrow { width: 30px; height: 30px; }
 }
 
 /* ── Small mobile: iPhone SE / 390px ── */
 @media (max-width: 420px) {
-  .slide-right { flex: 0 0 22dvh; }
-  .slide-left { padding: 12px 14px 68px; }
-  .slide-left h2 { font-size: clamp(18px, 5.5vw, 22px); }
-  .slide-left p.lead { font-size: 13px; }
+  .slide-left { padding: 40px 14px 70px; }
+  .slide-left h2 { font-size: clamp(17px, 5.5vw, 22px); }
+  .slide-left p.lead { font-size: clamp(12px, 3.5vw, 14px); }
+  .stat-num { font-size: 16px; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .bspec-grid { grid-template-columns: 1fr 1fr; }
   .show-grid { grid-template-columns: 1fr; }
@@ -1169,6 +1220,10 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
               </div>
             </div>
           </div>
+          <button class="hat-claim-btn" id="hatClaimCta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            Click here to see the hat
+          </button>
           <p class="kicker">The hat is the hook. The conversation is the goal. The CRM entry is the outcome.</p>
         </div>
         <div class="slide-right">
@@ -1252,49 +1307,43 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   });
 
   var mainEl = document.querySelector('.main');
-
   function isMobile() { return window.innerWidth <= 1100; }
 
   function go(i) {
     if (i < 0 || i >= total) return;
     if (!isMobile() && i === current) return;
-    // Update sidebar highlight
     sbList.children[current].classList.remove('is-active');
     current = i;
     sbList.children[current].classList.add('is-active');
     if (isMobile()) {
-      // Scroll to slide
-      slides[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Scroll to image section of slide i (section index = i * 2)
+      mainEl.scrollTo({ top: i * 2 * window.innerHeight, behavior: 'smooth' });
     } else {
-      // Fade slides
       slides.forEach(function(s, idx) { s.classList.toggle('is-active', idx === i); });
     }
     updateChrome();
   }
 
-  // IntersectionObserver: update active state while scrolling on mobile
-  if (typeof IntersectionObserver !== 'undefined') {
-    var io = new IntersectionObserver(function(entries) {
-      if (!isMobile()) return;
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          var idx = slides.indexOf(e.target);
-          if (idx >= 0 && idx !== current) {
-            sbList.children[current].classList.remove('is-active');
-            current = idx;
-            sbList.children[current].classList.add('is-active');
-            updateChrome();
-          }
-        }
-      });
-    }, { threshold: 0.3, rootMargin: '-5% 0px -60% 0px' });
-    slides.forEach(function(s) { io.observe(s); });
-  }
+  // Mobile: track current slide from scroll position
+  mainEl.addEventListener('scroll', function() {
+    if (!isMobile()) return;
+    var dvh = window.innerHeight;
+    if (!dvh) return;
+    var sectionIdx = Math.round(mainEl.scrollTop / dvh);
+    var slideIdx = Math.min(Math.floor(sectionIdx / 2), total - 1);
+    if (slideIdx !== current) {
+      sbList.children[current].classList.remove('is-active');
+      current = slideIdx;
+      sbList.children[current].classList.add('is-active');
+      updateChrome();
+    }
+  }, { passive: true });
 
   // On resize: reset layout
   window.addEventListener('resize', function() {
     if (!isMobile()) {
       slides.forEach(function(s, idx) { s.classList.toggle('is-active', idx === current); });
+      mainEl.scrollTop = 0;
     } else {
       slides.forEach(function(s) { s.classList.remove('is-active'); });
     }
@@ -1309,10 +1358,19 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     nextBtn.classList.toggle('is-disabled', current === total - 1);
   }
 
-  prevBtn.addEventListener('click', function() { go(current - 1); });
-  nextBtn.addEventListener('click', function() { go(current + 1); });
+  // Nav arrows: mobile = move 1 snap section (100dvh), desktop = move 1 slide
+  prevBtn.addEventListener('click', function() {
+    if (isMobile()) { mainEl.scrollBy({ top: -window.innerHeight, behavior: 'smooth' }); }
+    else { go(current - 1); }
+  });
+  nextBtn.addEventListener('click', function() {
+    if (isMobile()) { mainEl.scrollBy({ top: window.innerHeight, behavior: 'smooth' }); }
+    else { go(current + 1); }
+  });
 
+  // Desktop: keyboard navigation
   document.addEventListener('keydown', function(e) {
+    if (isMobile()) return;
     if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) {
       e.preventDefault(); go(current + 1);
     } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
@@ -1323,6 +1381,24 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
       e.preventDefault(); go(total - 1);
     }
   });
+
+  // Desktop: wheel to navigate slides (with cooldown to prevent runaway)
+  var wheelCooldown = false;
+  document.addEventListener('wheel', function(e) {
+    if (isMobile()) return;
+    // Allow scrolling within content panels until they hit their boundary
+    var scrollable = e.target.closest('.slide-left');
+    if (scrollable) {
+      var atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 10;
+      var atTop = scrollable.scrollTop <= 10;
+      if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) return;
+    }
+    if (wheelCooldown || Math.abs(e.deltaY) < 30) return;
+    e.preventDefault();
+    wheelCooldown = true;
+    go(e.deltaY > 0 ? current + 1 : current - 1);
+    setTimeout(function() { wheelCooldown = false; }, 800);
+  }, { passive: false });
 
   updateChrome();
 
@@ -1377,6 +1453,8 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 
   panel.addEventListener('click', open);
   if (openBtn) openBtn.addEventListener('click', function(e){ e.stopPropagation(); open(); });
+  var claimCta = document.getElementById('hatClaimCta');
+  if (claimCta) claimCta.addEventListener('click', function(e){ e.stopPropagation(); open(); });
   cls.addEventListener('click', close);
   prev.addEventListener('click', function(e){ e.stopPropagation(); goTo(current - 1); });
   next.addEventListener('click', function(e){ e.stopPropagation(); goTo(current + 1); });
