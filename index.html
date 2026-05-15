@@ -1155,6 +1155,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
     vol.style.background = `linear-gradient(to right, #a956ff ${pct}%, rgba(255,255,255,.2) ${pct}%)`;
   }
 
+  audio.currentTime = 0;
   audio.volume = parseFloat(vol.value);
   updateVol();
 
