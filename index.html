@@ -118,14 +118,12 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
 
 /* ─── Responsive ─── */
 
-/* ── RESPONSIVE ── */
-
-/* Large laptop (1280–1600px) */
+/* Large desktop (1281–1600px) */
 @media (max-width: 1600px) {
   .app { grid-template-columns: 280px 1fr; }
 }
 
-/* MacBook 14/16" (1100–1280px) */
+/* Laptop 13–16" (1101–1280px) */
 @media (max-width: 1280px) {
   .app { grid-template-columns: 240px 1fr; }
   .slide-left { padding: 36px 44px 90px; }
@@ -134,25 +132,17 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   .booth-price { font-size: 22px; }
 }
 
-/* MacBook 13" / narrow laptop (900–1100px) */
+/* ═══════════════════════════════════════════════════════
+   TABLET + MOBILE: completely different layout
+   - Sidebar becomes off-canvas drawer
+   - Slide flips to column: image header on TOP, content scrolls below
+   ═══════════════════════════════════════════════════════ */
 @media (max-width: 1100px) {
-  .app { grid-template-columns: 200px 1fr; }
-  .sb { padding: 16px 10px 14px; }
-  .sb-logo { height: 40px; }
-  .slide-left { padding: 32px 30px 84px; }
-  .slide-left h2 { font-size: clamp(20px, 2.6vw, 36px); }
-  .stats-row { gap: 10px; }
-  .concept-card, .show-card { padding: 12px; }
-  .bspec-grid { gap: 6px; }
-  .booth-price { font-size: 20px; }
-}
 
-/* ── TABLET & MOBILE: sidebar goes off-canvas, slides stack ── */
-@media (max-width: 900px) {
-  /* Layout */
+  /* ── App grid ── */
   .app { grid-template-columns: 1fr; height: 100dvh; }
 
-  /* Sidebar: off-canvas drawer */
+  /* ── Sidebar: off-canvas drawer ── */
   .sb {
     position: fixed; left: 0; top: 0; bottom: 0; width: 280px; z-index: 100;
     transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
@@ -161,112 +151,132 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
   .sb.is-open { transform: translateX(0); }
   .sb-toggle { display: flex; }
 
-  /* Slides: vertical stack — content top, image bottom */
+  /* ── Slide: column — image on TOP, content below ── */
   .slide { flex-direction: column; }
 
-  /* Content panel: scrollable, takes ~55% of screen */
+  /* Image/visual header — pinned to top */
+  .slide-right {
+    order: -1;
+    flex: 0 0 38dvh;
+    min-height: 0;
+    border-left: none;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .slide-right img.char { height: 82%; width: auto; }
+
+  /* Content panel — fills remaining screen, scrollable */
   .slide-left {
-    flex: 0 0 55dvh;
-    padding: 56px 28px 20px;
+    flex: 1;
+    min-height: 0;
+    padding: 22px 32px 80px;
     justify-content: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  .slide-left h2 { font-size: clamp(20px, 4vw, 32px); letter-spacing: -.5px; margin-bottom: 12px; }
-  .slide-left p.lead { font-size: 14px; margin-bottom: 14px; }
+  .slide-left h2 { font-size: clamp(22px, 2.8vw, 36px); letter-spacing: -.4px; margin-bottom: 12px; }
+  .slide-left p.lead { font-size: 15px; margin-bottom: 16px; }
   .slide-eyebrow { margin-bottom: 10px; }
 
-  /* Image panel: fills rest */
-  .slide-right { flex: 1; min-height: 0; }
-  .slide-right img.char { height: 85%; }
-
-  /* Component tweaks */
+  /* ── Component adjustments ── */
   .stats-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .stat-num { font-size: 22px; }
+  .stat-num { font-size: 24px; }
   .stat-card { padding: 12px 0 4px; }
   .pillars { grid-template-columns: repeat(3,1fr); gap: 8px; }
-  .pillar-num { font-size: 22px; }
+  .pillar-num { font-size: 24px; }
   .bspec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .booth-price { font-size: 20px; }
-  .pkg-options { gap: 6px; margin-top: 10px; }
+  .booth-price { font-size: 22px; }
+  .pkg-options { gap: 8px; margin-top: 12px; }
   .concept-grid { gap: 8px; }
   .concept-card, .show-card { padding: 12px; }
   .show-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .participant-panel { padding: 16px; gap: 10px; }
-  .participant-photo, .participant-initials { width: 44px; height: 44px; }
+  .participant-panel { padding: 14px 18px; gap: 10px; overflow-y: auto; }
+  .participant-photo, .participant-initials { width: 46px; height: 46px; }
   .participant-initials { font-size: 16px; }
   .statement-block { padding: 14px 18px; }
-  .statement-block p { font-size: 14px; }
+  .statement-block p { font-size: 15px; }
+  .hat-rules { gap: 14px; margin-top: 8px; }
+  .hat-rule-num { font-size: 34px; min-width: 46px; }
+  .hat-rule-text { font-size: 14px; }
 
-  /* Footer & nav */
+  /* ── Footer & nav ── */
   .slide-footer { left: 14px; right: 14px; bottom: 12px; font-size: 10.5px; }
-  .nav-arrows { bottom: 92px; right: 14px; }
+  .nav-arrows { bottom: 12px; right: 14px; }
 }
 
-/* Tablet portrait (600–768px) */
-@media (max-width: 768px) {
-  .slide-left { flex: 0 0 58dvh; padding: 54px 22px 16px; }
-  .slide-left h2 { font-size: clamp(18px, 4.5vw, 28px); margin-bottom: 10px; }
-  .stats-row { grid-template-columns: repeat(3,1fr); gap: 6px; }
-  .stat-num { font-size: 20px; }
-  .stat-label { font-size: 10.5px; }
-  .pillars { gap: 6px; }
-  .pillar { padding: 8px 0 0; }
-  .pillar-num { font-size: 20px; }
+/* ── Tablet portrait (769–900px): tighten image strip ── */
+@media (max-width: 900px) {
+  .slide-right { flex: 0 0 32dvh; }
+  .slide-left { padding: 18px 26px 76px; }
+  .slide-left h2 { font-size: clamp(20px, 3.2vw, 30px); margin-bottom: 10px; }
+  .slide-left p.lead { font-size: 14px; margin-bottom: 12px; }
+  .stat-num { font-size: 21px; }
+  .stat-label { font-size: 11.5px; }
+  .pillar-num { font-size: 21px; }
   .pillar-title { font-size: 12px; }
-  .pillar-body { font-size: 11px; }
-  .bspec-grid { gap: 6px; }
+  .pillar-body { font-size: 12px; }
   .bspec-val { font-size: 13px; }
-  .cl-item { padding: 7px 0; }
-  .cl-title { font-size: 12px; }
-  .cl-desc { font-size: 11px; }
-  .pkg-item-name { font-size: 11px; }
-  .pkg-item-price { font-size: 12px; }
+  .booth-price { font-size: 19px; }
+  .pkg-items { gap: 4px; }
 }
 
-/* Mobile (up to 600px) */
+/* ── Mobile (≤600px): single-column everything ── */
 @media (max-width: 600px) {
-  .slide-left { flex: 0 0 62dvh; padding: 50px 16px 100px; }
-  .slide-right { flex: 1; min-height: 120px; }
-  .slide-left h2 { font-size: clamp(17px, 5vw, 24px); letter-spacing: -.3px; margin-bottom: 8px; }
-  .slide-left p.lead { font-size: 13px; margin-bottom: 10px; }
-  .stats-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .slide-right { flex: 0 0 26dvh; }
+  .slide-left { padding: 16px 18px 72px; }
+  .slide-left h2 { font-size: clamp(20px, 5.5vw, 26px); letter-spacing: -.2px; margin-bottom: 8px; }
+  .slide-left p.lead { font-size: 13.5px; margin-bottom: 10px; }
+
+  /* Collapse all grids to 1 col or 2-col max */
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 5px; }
   .stat-num { font-size: 18px; }
-  .pillars { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-card { padding: 10px 0 3px; }
+  .pillars { grid-template-columns: 1fr; gap: 0; }
+  .pillar { border-top: 1px solid var(--border-soft); padding: 10px 0 2px; }
+  .pillar-num { font-size: 20px; margin-bottom: 2px; }
   .bspec-grid { grid-template-columns: 1fr 1fr; gap: 5px; }
   .bspec { padding: 8px 10px; }
   .bspec-val { font-size: 12px; }
   .bspec-label { font-size: 9px; }
   .booth-price { font-size: 18px; }
-  .show-grid { grid-template-columns: 1fr; gap: 6px; }
-  .concept-card { padding: 10px 12px; gap: 10px; }
   .pkg-items { flex-direction: column; gap: 3px; }
   .pkg-plus { display: none; }
-  .pkg-option { padding: 9px 11px; }
-  .participant-panel { padding: 12px; gap: 8px; }
-  .participant-card { padding: 12px 14px; gap: 10px; }
-  .participant-photo, .participant-initials { width: 38px; height: 38px; }
-  .participant-name { font-size: 13px; }
+  .pkg-option { padding: 8px 10px; }
+  .show-grid { grid-template-columns: 1fr; gap: 6px; }
+  .concept-grid { gap: 6px; }
+  .concept-card { padding: 10px 12px; gap: 8px; }
+  .participant-panel { padding: 10px 14px; gap: 6px; }
+  .participant-card { padding: 9px 12px; gap: 10px; }
+  .participant-photo, .participant-initials { width: 36px; height: 36px; }
+  .participant-name { font-size: 12px; }
   .participant-note { font-size: 11px; }
+  .statement-block { padding: 12px 14px; }
   .statement-block p { font-size: 13px; }
-  .slide-footer { left: 10px; right: 10px; bottom: 8px; }
-  .nav-arrows { bottom: 96px; right: 10px; gap: 6px; }
+  .hat-rule-num { font-size: 28px; min-width: 38px; }
+  .hat-rule-text { font-size: 13px; }
+  .qualify-card { padding: 10px 12px; }
+  .qualify-title { font-size: 13px; }
+  .qualify-body { font-size: 11.5px; }
+  .cl-item { padding: 7px 0; }
+  .cl-title { font-size: 12px; }
+  .cl-desc { font-size: 10.5px; }
+  .slide-footer { left: 10px; right: 10px; bottom: 8px; font-size: 10px; }
+  .nav-arrows { bottom: 10px; right: 10px; gap: 5px; }
   .nav-arrow { width: 30px; height: 30px; }
 }
 
-/* Small mobile — iPhone SE / 390px */
+/* ── Small mobile: iPhone SE / 390px ── */
 @media (max-width: 420px) {
-  .slide-left { flex: 0 0 65dvh; padding: 48px 14px 96px; }
-  .slide-left h2 { font-size: 17px; }
-  .slide-left p.lead { font-size: 12.5px; }
+  .slide-right { flex: 0 0 22dvh; }
+  .slide-left { padding: 12px 14px 68px; }
+  .slide-left h2 { font-size: clamp(18px, 5.5vw, 22px); }
+  .slide-left p.lead { font-size: 13px; }
   .stats-row { grid-template-columns: 1fr 1fr; }
-  .pillars { grid-template-columns: 1fr 1fr; }
-  .bspec-grid { grid-template-columns: 1fr; }
+  .bspec-grid { grid-template-columns: 1fr 1fr; }
   .show-grid { grid-template-columns: 1fr; }
   .checklist { gap: 0; }
-  .cl-item { padding: 6px 0; }
+  .cl-item { padding: 5px 0; }
   .cl-title { font-size: 11.5px; }
-  .cl-desc { font-size: 10.5px; }
+  .cl-desc { font-size: 10px; }
 }
 
 /* ─── Sidebar ─── */
@@ -966,7 +976,7 @@ h1, h2, h3, h4, h5, h6, p { text-wrap: balance; color: var(--ink); }
               </div>
             </div>
             <div class="participant-card">
-              <div class="participant-initials">MJ</div>
+              <img src="Images/malcolm.avif" alt="Malcolm Jull" class="participant-photo" style="object-position:center top;">
               <div>
                 <div class="participant-role">CEO</div>
                 <div class="participant-name">Malcolm Jull</div>
